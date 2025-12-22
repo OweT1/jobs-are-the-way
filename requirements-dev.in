@@ -1,3 +1,7 @@
 -r requirements.in
 
 ipykernel
+
+black
+flake8
+isort

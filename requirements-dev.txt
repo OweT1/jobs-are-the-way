@@ -10,6 +10,8 @@ beautifulsoup4==4.14.3
     #   python-jobspy
 certifi==2025.11.12
     # via requests
+cfgv==3.5.0
+    # via pre-commit
 charset-normalizer==3.4.4
     # via requests
 colorama==0.4.6
@@ -22,8 +24,14 @@ debugpy==1.8.19
     # via ipykernel
 decorator==5.2.1
     # via ipython
+distlib==0.4.0
+    # via virtualenv
 executing==2.2.1
     # via stack-data
+filelock==3.20.1
+    # via virtualenv
+identify==2.6.15
+    # via pre-commit
 idna==3.11
     # via requests
 ipykernel==7.1.0
@@ -50,6 +58,8 @@ matplotlib-inline==0.2.1
     #   ipython
 nest-asyncio==1.6.0
     # via ipykernel
+nodeenv==1.10.0
+    # via pre-commit
 numpy==1.26.3
     # via
     #   -r requirements.in
@@ -64,7 +74,11 @@ pandas==2.3.3
 parso==0.8.5
     # via jedi
 platformdirs==4.5.1
-    # via jupyter-core
+    # via
+    #   jupyter-core
+    #   virtualenv
+pre-commit==4.5.1
+    # via -r requirements.in
 prompt-toolkit==3.0.52
     # via ipython
 psutil==7.1.3
@@ -89,6 +103,8 @@ python-jobspy==1.1.82
     # via -r requirements.in
 pytz==2025.2
     # via pandas
+pyyaml==6.0.3
+    # via pre-commit
 pyzmq==27.1.0
     # via
     #   ipykernel
@@ -130,6 +146,8 @@ tzdata==2025.3
     # via pandas
 urllib3==2.6.2
     # via requests
+virtualenv==20.35.4
+    # via pre-commit
 wcwidth==0.2.14
     # via prompt-toolkit
 win32-setctime==1.2.0
