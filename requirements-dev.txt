@@ -52,6 +52,7 @@ nest-asyncio==1.6.0
     # via ipykernel
 numpy==1.26.3
     # via
+    #   -r requirements.in
     #   pandas
     #   python-jobspy
 packaging==25.0

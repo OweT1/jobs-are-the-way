@@ -20,9 +20,7 @@ def search_jobs(search_term: str, hours_old: int = HOURS_OLD, location: str = DE
       location=location,
       country_indeed=location,
       hours_old=hours_old,
-      
-      # linkedin_fetch_description=True # gets more info such as description, direct job url (slower)
-      # proxies=["208.195.175.46:65095", "208.195.175.45:65095", "localhost"],
+      linkedin_fetch_description=True # gets more info such as description, direct job url (slower)
   )
   logger.info("Found {} jobs for search term {}", len(jobs), search_term)
   return jobs

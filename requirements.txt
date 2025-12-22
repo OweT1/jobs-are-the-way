@@ -20,6 +20,7 @@ markdownify==0.13.1
     # via python-jobspy
 numpy==1.26.3
     # via
+    #   -r requirements.in
     #   pandas
     #   python-jobspy
 pandas==2.3.3

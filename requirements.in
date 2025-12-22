@@ -1,4 +1,5 @@
-python-jobspy
-loguru
+numpy
 pandas
 python-dotenv
+python-jobspy~=1.1.82
+loguru

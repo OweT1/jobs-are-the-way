@@ -11,8 +11,5 @@ virtual-environment: requirements.txt
 	python -m venv venv
 	uv pip sync requirements.txt
 
-activate:
-	.venv/scripts/activate
-
 dev:
 	uv pip sync requirements-dev.txt
