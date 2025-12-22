@@ -1,5 +1,7 @@
+# Standard Library Packages
 import os
 
+# Third Party Packages
 import pandas as pd
 from dotenv import load_dotenv
 from jobspy import scrape_jobs
