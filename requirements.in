@@ -6,3 +6,4 @@ loguru
 tenacity
 
 pre-commit
+python-telegram-bot
