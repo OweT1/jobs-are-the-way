@@ -13,3 +13,6 @@ virtual-environment: requirements.txt
 
 dev:
 	uv pip sync requirements-dev.txt
+
+quick-sync: requirements.txt requirements-dev.txt dev
+	@echo "Sync finished"
