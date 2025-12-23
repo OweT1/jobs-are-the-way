@@ -1,5 +1,11 @@
+# Cache
+__pycache__/
+
 # Virtual Environment
 venv/
 
 # Environmental Variables
 .env
+
+# Jupyter Notebooks
+notebooks/
