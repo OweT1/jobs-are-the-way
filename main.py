@@ -13,7 +13,11 @@ from src.helper.job_search import search_jobs_with_retry
 from src.helper.llm.llm_client import OpenRouterLLMClient
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
-from src.utils import format_job_text_message, get_job_thread_ids
+from src.utils import (
+    format_job_description,
+    format_job_text_message,
+    get_job_thread_ids,
+)
 
 # Envrironmental Variables
 load_dotenv()
@@ -32,11 +36,17 @@ async def main():
     tasks = [asyncio.to_thread(search_jobs_with_retry, role) for role in ALL_ROLES]
 
     results = await asyncio.gather(*tasks)
-    final_df = pd.concat(results).drop_duplicates().reset_index(drop=True)
+    final_df = (
+        pd.concat(results)
+        .drop_duplicates(subset=["id"], keep="first")
+        .reset_index(drop=True)
+    )
 
     tasks = [
-        client.get_chat_completion(get_category_prompt(job_details=description))
-        for description in final_df["description"]
+        client.get_chat_completion(
+            get_category_prompt(job_details=format_job_description(row))
+        )
+        for _, row in final_df.iterrows()
     ]
     results = await asyncio.gather(*tasks)
     final_df["JOB_CATEGORY"] = results

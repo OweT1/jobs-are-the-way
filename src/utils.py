@@ -5,6 +5,7 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 from loguru import logger
+from unstructured.cleaners.core import group_broken_paragraphs
 
 # Load environmental variables
 load_dotenv()
@@ -58,3 +59,23 @@ def format_job_text_message(row: pd.Series) -> str:
   """
 
     return output_msg
+
+
+def format_job_description(row: pd.Series) -> str:
+    cleaned_row = row.dropna()
+
+    def _format_field(str_format: str, field: str):
+        logger.info("Filling for formatted string: {}", str_format)
+        value = cleaned_row.get(field, "")
+        if value:
+            return str_format.format(field=value)
+        return ""
+
+    description = f"""
+Job Title: {cleaned_row['title']}
+
+Job Description:
+{group_broken_paragraphs(cleaned_row['description'])}
+  """
+
+    return description

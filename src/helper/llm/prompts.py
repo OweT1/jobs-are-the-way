@@ -16,17 +16,20 @@ def get_job_descriptions() -> str:
 def get_category_prompt(job_details: str) -> str:
     return f"""
   <instructions>
-  You are an expert at categorising a job into one of the job categories based on the provided job details.
-  You should refer to the job descriptions (in <job_descriptions> XML tags) when categorising the job based on the provided job details.
-  You are to STRICTLY follow the output instructions found in <output_instructions> tags.
+  You are an expert system for categorising a job into exactly ONE job category based on the provided job details.
 
-  The list of job categories can be found in <job_categories> XML tags.
-  You will be provided with the job details in the <job_details> XML tags.
+  You MUST categorise the job using ONLY the definitions and technology stacks provided in <job_descriptions>.
+  If multiple categories appear relevant, choose the MOST SPECIFIC and BEST-MATCHING category.
+  If the job does not clearly match any technical data-related role or if the role is of a senior/managerial/lead position, categorise it as NOT_RELEVANT.
+
+  You MUST NOT infer skills or responsibilities that are not explicitly mentioned in the job details.
+
+  You MUST follow the output instructions found in <output_instructions> strictly.
   </instructions>
 
   <output_instructions>
-  You are to STRICTLY output only one of the categories from <job_categories> as your output.
-  You must not include any reasoning in your output.
+  You must output ONLY ONE value from <job_categories>.
+  Do NOT include explanations, reasoning, punctuation, or additional text.
   </output_instructions>
 
   <job_descriptions>

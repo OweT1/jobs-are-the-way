@@ -29,31 +29,43 @@ JOB_CATEGORIES_DESCRIPTIONS = {
     "AIML_ENGINEER": (
         "Artificial Intelligence Engineer / Machine Learning Engineer - "
         "Works on building, training, evaluating, and deploying machine learning or AI models, "
-        "including model pipelines, inference services, and MLOps workflows"
+        "including model pipelines, inference services, and MLOps workflows."
+        "Common Technology Stack/Terms: Python, Go, C++, Rust, Tensorflow/PyTorch, CUDA, "
+        "Traditional Machine Learning, Deep Learning, LLMs, Model Serving, MLOps"
     ),
     "DATA_ENGINEER": (
         "Data Engineer - Works on designing, building, and maintaining data ETL/ELT pipelines, "
         "data warehouses, and data infrastructure using technologies such as SQL, Spark, "
         "Snowflake, Microsoft Azure, or similar platforms"
+        "Common Technology Stack/Terms: SQL, NoSQL, Spark, Hadoop, MapReduce, Data Streaming, Flink, Kafka,"
+        "ETL/ELT pipelines, Airflow, Cloud Computing, Databases, APIs,"
+        "Snowflake, Microsoft Azure, Google Cloud Platform, AWS"
     ),
     "DATA_SCIENTIST": (
         "Data Scientist - Works on analyzing data to extract insights, build predictive or "
         "statistical models, perform experimentation, and communicate findings to support "
         "business or product decisions"
+        "Common Technology Stack/Terms: Python, R, SQL, Pandas, NumPy, Scikit-learn, "
+        "Statistical Modeling, Experimentation, A/B Testing, Data Visualization"
     ),
     "DATA_ANALYST": (
         "Data Analyst - Works on querying, cleaning, and analyzing data to produce dashboards, "
         "reports, and ad-hoc analyses using tools such as SQL, Excel, BI tools, or Python, "
         "primarily focused on descriptive and diagnostic analytics"
+        "Common Technology Stack/Terms: SQL, Excel, BI Tools (Tableau, Power BI, Looker), "
+        "Python, Data Visualization, Reporting, Dashboards"
     ),
     "OTHERS": (
         "Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, "
         "Data Engineer, Data Scientist, or Data Analyst categories, such as Software Engineer, "
         "Frontend/Backend Engineer, Mobile Developer, QA Engineer, or similar roles"
+        "Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, "
+        "APIs, Cloud Services, DevOps Tools"
     ),
     "NOT_RELEVANT": (
         "Not Relevant - Jobs that are not relevant to the target scope, including non-tech roles "
-        "(e.g. marketing, sales, business, finance, traditional engineering), or roles that are "
-        "not junior-level and require two or more years of full-time working experience"
+        "(e.g. marketing, sales, business, finance, traditional engineering), or tech roles that are "
+        "not junior-level and require two or more years of full-time working experience."
+        "This includes senior and managerial roles, which typically requires a few years of experience."
     ),
 }

@@ -15,6 +15,7 @@ dependencies = [
     "tenacity==9.1.2",
     "tornado==6.5.4",
     "openai>=2.14.0",
+    "unstructured>=0.18.21",
 ]
 
 [project.optional-dependencies]
