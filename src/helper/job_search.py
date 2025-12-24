@@ -49,7 +49,7 @@ def search_jobs_with_retry(
             country_indeed=location,
             hours_old=hours_old,
             linkedin_fetch_description=True,  # gets more info such as description, direct job url (slower)
-            proxies=["208.195.175.46:65095", "208.195.175.45:65095"],
+            # proxies=["208.195.175.46:65095", "208.195.175.45:65095"],
         )
         logger.info("Found {} jobs for search term {}", len(jobs), search_term)
         return jobs
