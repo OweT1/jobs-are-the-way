@@ -4,6 +4,7 @@ on:
   schedule:
     # This cron expression runs the workflow every hour
     - cron: "0 * * * *"
+  workflow_dispatch: # Allows you to run the script manually for testing
 
 jobs:
   run-script:
@@ -11,5 +12,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4 # Action to check out your repository code
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: "pip" # Speeds up subsequent runs
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv sync
+
       - name: Run Script
+        env:
+          # If your script needs API keys or tokens, add them here
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          HOURS_OLD: ${{ secrets.HOURS_OLD }}
+          DEFAULT_LOCATION: ${{ secrets.DEFAULT_LOCATION }}
+          TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+          TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+          AIML_ENGINEER_THREAD_ID: ${{ secrets.AIML_ENGINEER_THREAD_ID }}
+          DATA_ENGINEER_THREAD_ID: ${{ secrets.DATA_ENGINEER_THREAD_ID}}
+          DATA_SCIENTIST_THREAD_ID: ${{ secrets.DATA_SCIENTIST_THREAD_ID }}
+          DATA_ANALYST_THREAD_ID: ${{ secrets.DATA_ANALYST_THREAD_ID }}
+          OTHERS_THREAD_ID: ${{ secrets.OTHERS_THREAD_ID }}
         run: python -m main
