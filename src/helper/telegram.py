@@ -2,11 +2,9 @@
 import os
 
 # Third Party Packages
+import telegram
 from dotenv import load_dotenv
 from loguru import logger
-
-# Local Project
-import telegram
 
 # Load environmental variables
 load_dotenv()

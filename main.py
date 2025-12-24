@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 from loguru import logger
 
 # Local Project
-from src.helper import format_job_text_message, get_job_metadata
-from src.jobs.search import search_jobs_with_retry
-from src.telegram.bot import TeleBot
+from src.helper.job_search import search_jobs_with_retry
+from src.helper.telegram import TeleBot
+from src.utils import format_job_text_message, get_job_metadata
 
 # Envrironmental Variables
 load_dotenv()

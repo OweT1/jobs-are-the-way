@@ -8,11 +8,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 # Local Project
-from src.jobs.constants import (
-    AIML_ENGINEER_ROLES,
-    DATA_ENGINEER_ROLES,
-    DATA_SCIENTIST_ROLES,
-)
+from src.constants import AIML_ENGINEER_ROLES, DATA_ENGINEER_ROLES, DATA_SCIENTIST_ROLES
 
 # Load environmental variables
 load_dotenv()
