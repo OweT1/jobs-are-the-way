@@ -57,21 +57,19 @@ def format_job_text_message(row: pd.Series) -> str:
             return str_format.format(field=value)
         return ""
 
+    def _boldify_text(text: str):
+        return f"<b>{text}</b>"
+
     header_component = f"""
-  {cleaned_row['company']} {_format_field("({field})", "company_url")}
-  {cleaned_row['title']}
+{_boldify_text("Company")}: {cleaned_row['company']} {_format_field("({field})", "company_url")}
 
-  Application Link: {cleaned_row['job_url']} {_format_field("/ {field}", "job_url_direct")}
-  """
+{_boldify_text("Job Title")}: {cleaned_row['title']}
 
-    body_component = f"""
-  {_format_field("Job Description: {field}", "description")}
+{_boldify_text("Application Link")}: {cleaned_row['job_url']} {_format_field("/ {field}", "job_url_direct")}
   """
 
     output_msg = f"""
-  {header_component}
-
-  {body_component}
+{header_component}
   """
 
     return output_msg

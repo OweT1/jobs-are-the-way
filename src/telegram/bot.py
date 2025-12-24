@@ -22,6 +22,10 @@ class TeleBot:
         bot = telegram.Bot(self.bot_token)
         async with bot:
             await bot.send_message(
-                text=text, chat_id=chat_id, message_thread_id=topic_id
+                text=text,
+                chat_id=chat_id,
+                message_thread_id=topic_id,
+                parse_mode=telegram.constants.ParseMode.HTML,
+                disable_notification=True,
             )
         logger.info("Bot has sent message '{}' to chat {}", text, chat_id)
