@@ -1,0 +1,15 @@
+name: Hourly Message job
+
+on:
+  schedule:
+    # This cron expression runs the workflow every hour
+    - cron: "0 * * * *"
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest # Specifies the runner environment
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Action to check out your repository code
+      - name: Run Script
+        run: python -m main
