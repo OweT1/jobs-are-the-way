@@ -10,8 +10,10 @@ dependencies = [
     "python-jobspy==1.1.82",
     "python-telegram-bot==22.5",
     "loguru==0.7.3",
-    "tenacity==9.1.2",
     "pre-commit==4.5.1",
+    "pip>=25.3",
+    "tenacity==9.1.2",
+    "tornado==6.5.4",
 ]
 
 [project.optional-dependencies]
