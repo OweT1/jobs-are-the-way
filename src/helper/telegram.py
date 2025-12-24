@@ -16,13 +16,13 @@ class TeleBot:
     def __init__(self, bot_token: str = DEFAULT_BOT_TOKEN):
         self.bot_token = bot_token
 
-    async def send_message(self, text: str, chat_id: int, topic_id: int = None):
+    async def send_message(self, text: str, chat_id: int, thread_id: int = None):
         bot = telegram.Bot(self.bot_token)
         async with bot:
             await bot.send_message(
                 text=text,
                 chat_id=chat_id,
-                message_thread_id=topic_id,
+                message_thread_id=thread_id,
                 parse_mode=telegram.constants.ParseMode.HTML,
                 disable_notification=True,
             )

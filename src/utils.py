@@ -1,14 +1,10 @@
 # Standard Library Packages
 import os
-from typing import Literal
 
 # Third Party Packages
 import pandas as pd
 from dotenv import load_dotenv
 from loguru import logger
-
-# Local Project
-from src.constants import AIML_ENGINEER_ROLES, DATA_ENGINEER_ROLES, DATA_SCIENTIST_ROLES
 
 # Load environmental variables
 load_dotenv()
@@ -19,20 +15,13 @@ required_fields = frozenset(["company", "title", "job_url"])
 
 
 # --- Functions --- #
-def get_job_metadata() -> dict[dict[str, Literal[list[str], str]]]:
+def get_job_thread_ids() -> dict[str, str]:
     return {
-        "AIML_ENGINEER": {
-            "SEARCH_TERMS": AIML_ENGINEER_ROLES,
-            "CHAT_ID": os.getenv("AIML_ENGINEER_THREAD_ID"),
-        },
-        "DATA_ENGINEER": {
-            "SEARCH_TERMS": DATA_ENGINEER_ROLES,
-            "CHAT_ID": os.getenv("DATA_ENGINEER_THREAD_ID"),
-        },
-        "DATA_SCIENTIST": {
-            "SEARCH_TERMS": DATA_SCIENTIST_ROLES,
-            "CHAT_ID": os.getenv("DATA_SCIENTIST_THREAD_ID"),
-        },
+        "AIML_ENGINEER": os.getenv("AIML_ENGINEER_THREAD_ID"),
+        "DATA_ENGINEER": os.getenv("DATA_ENGINEER_THREAD_ID"),
+        "DATA_SCIENTIST": os.getenv("DATA_SCIENTIST_THREAD_ID"),
+        "DATA_ANALYST": os.getenv("DATA_ANALYST_THREAD_ID"),
+        "OTHERS": os.getenv("OTHERS_THREAD_ID"),
     }
 
 
