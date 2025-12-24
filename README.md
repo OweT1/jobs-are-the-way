@@ -5,7 +5,7 @@
 For windows, create a VE using:
 
 ```powershell
-python -m venv venv
+python -m venv .venv
 ```
 
 and activate by running:
