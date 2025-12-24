@@ -1,18 +1,12 @@
 setup:
 	pip install uv
 
-requirements-dev.txt: setup
-	uv pip compile requirements-dev.in -o requirements-dev.txt
+virtual-environment: setup
+	python -m venv .venv
+	uv sync
 
-requirements.txt: setup
-	uv pip compile requirements.in -o requirements.txt
+dev: setup
+	uv sync --extra dev
 
-virtual-environment: requirements.txt
-	python -m venv venv
-	uv pip sync requirements.txt
-
-dev:
-	uv pip sync requirements-dev.txt
-
-quick-sync: requirements.txt requirements-dev.txt dev
+quick-sync: dev
 	@echo "Sync finished"
