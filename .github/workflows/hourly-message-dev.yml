@@ -9,6 +9,7 @@ jobs:
     environment: develop
 
     env:
+      ENVRIONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
       HOURS_OLD: ${{ vars.HOURS_OLD }}
       DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
@@ -19,6 +20,7 @@ jobs:
       DATA_SCIENTIST_THREAD_ID: ${{ secrets.DATA_SCIENTIST_THREAD_ID }}
       DATA_ANALYST_THREAD_ID: ${{ secrets.DATA_ANALYST_THREAD_ID }}
       OTHERS_THREAD_ID: ${{ secrets.OTHERS_THREAD_ID }}
+      NON_RELEVANT_CHANNEL_ID: ${{ secrets.NON_RELEVANT_CHANNEL_ID }}
 
     steps:
       - name: Checkout code

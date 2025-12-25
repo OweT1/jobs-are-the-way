@@ -49,10 +49,12 @@ async def main():
         mes = format_job_text_message(row)
         job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")
         thread_id = job_thread_ids.get(job_category)
-        if thread_id:
+        logger.info("Sending message to {} channel", job_category)
+
+        if job_category == "NOT_RELEVANT":
+            await tele_bot.send_message(mes, settings.non_relevant_channel_id)
+        else:
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
-        else:  # If not relevant
-            logger.info("Job of {} skipped", mes)
 
 
 if __name__ == "__main__":

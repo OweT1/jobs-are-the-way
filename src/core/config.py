@@ -1,27 +1,51 @@
 # Standard Library Packages
-import os
+from enum import Enum
 from functools import lru_cache
+from typing import Literal
 
 # Third Party Packages
 from dotenv import load_dotenv
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 load_dotenv()
 
 
+class Environment(Enum):
+    LOCAL: str = "LOCAL"
+    DEV: str = "DEV"
+    PROD: str = "PROD"
+
+
+DEFAULT_ENVIRONMENT = Environment.DEV.value
+ENVIRONMENTS = [env.value for env in Environment]
+
+DEFAULT_HOURS_OLD = 1
+DEFAULT_LOCATION = "Singapore"
+
+
 class Settings(BaseSettings):
-    openrouter_api_key: str = os.getenv("OPENROUTER_API_KEY")
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_file_encoding="utf-8",
+        extra="ignore",  # Ignores extra env vars not defined here
+    )
 
-    hours_old: int = os.getenv("HOURS_OLD")
-    default_location: str = os.getenv("Singapore")
+    environment_name: Literal[*ENVIRONMENTS] = DEFAULT_ENVIRONMENT
+    openrouter_api_key: str
 
-    telegram_bot_api: str = os.getenv("TELEGRAM_BOT_API")
-    telegram_channel_id: str = os.getenv("TELEGRAM_CHANNEL_ID")
-    aiml_engineer_thread_id: int = os.getenv("AIML_ENGINEER_THREAD_ID")
-    data_engineer_thread_id: int = os.getenv("DATA_ENGINEER_THREAD_ID")
-    data_scientist_thread_id: int = os.getenv("DATA_SCIENTIST_THREAD_ID")
-    data_analyst_thread_id: int = os.getenv("DATA_ANALYST_THREAD_ID")
-    others_thread_id: int = os.getenv("OTHERS_THREAD_ID")
+    # JobSpy
+    hours_old: int = DEFAULT_HOURS_OLD
+    default_location: str = DEFAULT_LOCATION
+
+    # Telegram
+    telegram_bot_api: str
+    telegram_channel_id: str
+    aiml_engineer_thread_id: str
+    data_engineer_thread_id: str
+    data_scientist_thread_id: str
+    data_analyst_thread_id: str
+    others_thread_id: str
+    non_relevant_channel_id: str
 
 
 @lru_cache
