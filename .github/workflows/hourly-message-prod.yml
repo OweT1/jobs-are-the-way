@@ -1,19 +1,20 @@
-name: Hourly Message job
+name: Hourly Message job - PROD
 
 on:
   schedule:
-    # This cron expression runs the workflow every hour
+    # Runs the workflow every hour
     - cron: "0 * * * *"
-  workflow_dispatch: # Allows you to run the script manually for testing
+  workflow_dispatch: # Allows to run the script manually for testing
 
 jobs:
   run-script:
     runs-on: ubuntu-latest # Specifies the runner environment
+    environment: production
 
     env:
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
-      HOURS_OLD: ${{ secrets.HOURS_OLD }}
-      DEFAULT_LOCATION: ${{ secrets.DEFAULT_LOCATION }}
+      HOURS_OLD: ${{ vars.HOURS_OLD }}
+      DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
       TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
       TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
       AIML_ENGINEER_THREAD_ID: ${{ secrets.AIML_ENGINEER_THREAD_ID }}
@@ -24,7 +25,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4 # Action to check out your repository code
+        uses: actions/checkout@v4 # Action to check out repository code
 
       - name: Install uv
         uses: astral-sh/setup-uv@v5

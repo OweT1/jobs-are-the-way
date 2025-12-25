@@ -1,0 +1,37 @@
+name: Hourly Message job - DEV
+
+on:
+  workflow_dispatch: # Allows to run the script manually for testing
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest # Specifies the runner environment
+    environment: develop
+
+    env:
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      HOURS_OLD: ${{ vars.HOURS_OLD }}
+      DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
+      TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+      TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      AIML_ENGINEER_THREAD_ID: ${{ secrets.AIML_ENGINEER_THREAD_ID }}
+      DATA_ENGINEER_THREAD_ID: ${{ secrets.DATA_ENGINEER_THREAD_ID}}
+      DATA_SCIENTIST_THREAD_ID: ${{ secrets.DATA_SCIENTIST_THREAD_ID }}
+      DATA_ANALYST_THREAD_ID: ${{ secrets.DATA_ANALYST_THREAD_ID }}
+      OTHERS_THREAD_ID: ${{ secrets.OTHERS_THREAD_ID }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4 # Action to check out repository code
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true # Uses GitHub's cache for uv dependencies automatically
+          version: "latest"
+
+      - name: Set up Python
+        run: uv python install 3.13
+
+      - name: Run Script
+        run: uv run python -m main # 'uv run' automatically handles environment syncing and running the module
