@@ -1,14 +1,13 @@
 # Standard Library Packages
 import asyncio
-import os
 
 # Third Party Packages
 import pandas as pd
-from dotenv import load_dotenv
 from loguru import logger
 
 # Local Project
 from src.constants import ALL_ROLES
+from src.core.config import settings
 from src.helper.job_search import search_jobs_with_retry
 from src.helper.llm.llm_client import OpenRouterLLMClient
 from src.helper.llm.prompts import get_category_prompt
@@ -18,11 +17,6 @@ from src.utils import (
     format_job_text_message,
     get_job_thread_ids,
 )
-
-# Envrironmental Variables
-load_dotenv()
-
-CHANNEL_ID = os.getenv("TELEGRAM_CHANNEL_ID")
 
 
 # --- Main function --- #
@@ -56,8 +50,8 @@ async def main():
         job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")
         thread_id = job_thread_ids.get(job_category)
         if thread_id:
-            await tele_bot.send_message(mes, CHANNEL_ID, thread_id)
-        else:
+            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+        else:  # If not relevant
             logger.info("Job of {} skipped", mes)
 
 

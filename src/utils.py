@@ -1,15 +1,10 @@
-# Standard Library Packages
-import os
-
 # Third Party Packages
 import pandas as pd
-from dotenv import load_dotenv
 from loguru import logger
 from unstructured.cleaners.core import group_broken_paragraphs
 
-# Load environmental variables
-load_dotenv()
-
+# Local Project
+from src.core.config import settings
 
 # --- Constants --- #
 required_fields = frozenset(["company", "title", "job_url"])
@@ -18,11 +13,11 @@ required_fields = frozenset(["company", "title", "job_url"])
 # --- Functions --- #
 def get_job_thread_ids() -> dict[str, str]:
     return {
-        "AIML_ENGINEER": os.getenv("AIML_ENGINEER_THREAD_ID"),
-        "DATA_ENGINEER": os.getenv("DATA_ENGINEER_THREAD_ID"),
-        "DATA_SCIENTIST": os.getenv("DATA_SCIENTIST_THREAD_ID"),
-        "DATA_ANALYST": os.getenv("DATA_ANALYST_THREAD_ID"),
-        "OTHERS": os.getenv("OTHERS_THREAD_ID"),
+        "AIML_ENGINEER": settings.aiml_engineer_thread_id,
+        "DATA_ENGINEER": settings.data_engineer_thread_id,
+        "DATA_SCIENTIST": settings.data_scientist_thread_id,
+        "DATA_ANALYST": settings.data_analyst_thread_id,
+        "OTHERS": settings.others_thread_id,
     }
 
 

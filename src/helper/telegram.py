@@ -1,19 +1,14 @@
-# Standard Library Packages
-import os
-
 # Third Party Packages
 import telegram
-from dotenv import load_dotenv
 from loguru import logger
 
-# Load environmental variables
-load_dotenv()
-DEFAULT_BOT_TOKEN = os.getenv("TELEGRAM_BOT_API")
+# Local Project
+from src.core.config import settings
 
 
 # --- Telegram Bot Class --- #
 class TeleBot:
-    def __init__(self, bot_token: str = DEFAULT_BOT_TOKEN):
+    def __init__(self, bot_token: str = settings.telegram_bot_api):
         self.bot_token = bot_token
 
     async def send_message(self, text: str, chat_id: int, thread_id: int = None):

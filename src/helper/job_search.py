@@ -1,18 +1,11 @@
-# Standard Library Packages
-import os
-
 # Third Party Packages
 import pandas as pd
-from dotenv import load_dotenv
 from jobspy import scrape_jobs
 from loguru import logger
 from tenacity import RetryCallState, retry, stop_after_attempt, wait_exponential
 
-# Load environmental variables
-load_dotenv()
-
-HOURS_OLD = int(os.getenv("HOURS_OLD"))
-DEFAULT_lOCATION = os.getenv("DEFAULT_LOCATION")
+# Local Project
+from src.core.config import settings
 
 
 # --- Functions --- #
@@ -35,7 +28,9 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10):
 
 
 def search_jobs_with_retry(
-    search_term: str, hours_old: int = HOURS_OLD, location: str = DEFAULT_lOCATION
+    search_term: str,
+    hours_old: int = settings.hours_old,
+    location: str = settings.default_location,
 ) -> pd.DataFrame:
     retry_decorator = create_retry_decorator()
 
