@@ -37,4 +37,4 @@ jobs:
         run: uv python install 3.13
 
       - name: Run Script
-        run: uv run python -m main # 'uv run' automatically handles environment syncing and running the module
+        run: uv run python -m src.main # 'uv run' automatically handles environment syncing and running the module

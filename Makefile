@@ -8,5 +8,8 @@ virtual-environment: setup
 dev: setup
 	uv sync --extra dev
 
+run: dev
+	python -m src.main
+
 quick-sync: dev
 	@echo "Sync finished"
