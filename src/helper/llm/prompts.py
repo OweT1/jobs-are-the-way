@@ -21,10 +21,11 @@ def get_category_prompt(job_details: str) -> str:
   You MUST use the above information categorise the job using the definitions provided in <job_descriptions>.
   If multiple categories appear relevant, choose the MOST SPECIFIC and BEST-MATCHING category.
 
-  You MUST categorise the job as 'NON_RELEVANT' if any of the conditions are met:
-  - The job does not clearly match any technical role in the Job Categories.
-  - The role is of a senior/managerial/lead/principal or similar position, even if it matches any of the technical roles.
-  - The role requires >= 2 years of working experience, even if it matches any of the technical roles.
+  You MUST categorise the job as 'NON_RELEVANT' if the job does not clearly match any technology role in the Job Categories.
+
+  You MUST categorise the job as 'SENIOR_TECH' if all of the conditions are met:
+  - The role matches any of the technology roles.
+  - The role is of a senior/lead/principal/expert/managerial/president or similar position, or requires minimally 2 years of working experience.
 
   You MUST NOT infer skills or responsibilities that are not explicitly mentioned in the job details.
 

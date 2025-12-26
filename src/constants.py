@@ -22,6 +22,7 @@ JOB_CATEGORIES = [
     "DATA_SCIENTIST",
     "DATA_ANALYST",
     "OTHERS",
+    "SENIOR_TECH",
     "NOT_RELEVANT",
 ]
 
@@ -63,10 +64,13 @@ JOB_CATEGORIES_DESCRIPTIONS = {
         "Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, "
         "APIs, Cloud Services, DevOps Tools"
     ),
+    "SENIOR_TECH": (
+        "Senior Technology Role - Jobs that are related to technology, but are of senior level (not junior level), "
+        "where senior level roles are defined to require minimally 2 years of full-time working experience. "
+        "Common Terms in Non-Junior Job Titles: Senior, Lead, Principal, Expert, Manager, President, Vice-President, VP etc.."
+    ),
     "NOT_RELEVANT": (
-        "Not Relevant - Jobs that are not relevant to the target scope, including non-tech roles "
-        "(e.g. marketing, sales, business, finance, traditional engineering), or tech roles that are "
-        "not junior-level (require >= 2 years of full-time working experience)."
-        "Common Words in Non-Junior Job Titles: Senior, Lead, Principal, Manager, President etc.."
+        "Not Relevant - Jobs that are not relevant to the target scope, primarily non-tech roles "
+        "such as marketing, sales, business, finance, traditional engineering etc."
     ),
 }

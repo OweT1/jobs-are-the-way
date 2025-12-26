@@ -56,6 +56,7 @@ def get_job_thread_ids() -> dict[str, str]:
         "DATA_SCIENTIST": settings.data_scientist_thread_id,
         "DATA_ANALYST": settings.data_analyst_thread_id,
         "OTHERS": settings.others_thread_id,
+        "SENIOR_TECH": settings.non_relevant_channel_id,  # SENIOR_TECH will be tagged to NON_RELEVANT_CHANNEL_ID for now
     }
 
 
