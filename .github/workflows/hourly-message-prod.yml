@@ -14,6 +14,7 @@ jobs:
     env:
       ENVRIONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
       OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_BASE_URL: ${{ vars.OPENROUTER_BASE_URL }}
       HOURS_OLD: ${{ vars.HOURS_OLD }}
       DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
       TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}

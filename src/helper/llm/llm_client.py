@@ -1,26 +1,18 @@
-# Standard Library Packages
-import os
-
 # Third Party Packages
-from dotenv import load_dotenv
 from loguru import logger
 from openai import AsyncOpenAI
 
 # Local Project
+from src.core.config import settings
 from src.helper.llm.constants import OpenRouterFreeModels
-
-load_dotenv()
-
-# Environmental Variables
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 
 
 # --- LLM Functions --- #
 class OpenRouterLLMClient:
     def __init__(
         self,
-        api_key: str = OPENROUTER_API_KEY,
-        base_url: str = "https://openrouter.ai/api/v1",
+        api_key: str = settings.openrouter_api_key,
+        base_url: str = settings.openrouter_base_url,
     ):
         self.api_key = api_key
         self.base_url = base_url

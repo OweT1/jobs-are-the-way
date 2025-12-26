@@ -32,6 +32,7 @@ class Settings(BaseSettings):
 
     environment_name: Literal[*ENVIRONMENTS] = DEFAULT_ENVIRONMENT
     openrouter_api_key: str
+    openrouter_base_url: str
 
     # JobSpy
     hours_old: int = DEFAULT_HOURS_OLD
