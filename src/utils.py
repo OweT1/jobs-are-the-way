@@ -59,18 +59,11 @@ def format_job_text_message(row: pd.Series) -> str:
 def format_job_description(row: pd.Series) -> str:
     cleaned_row = row.dropna()
 
-    def _format_field(str_format: str, field: str):
-        logger.info("Filling for formatted string: {}", str_format)
-        value = cleaned_row.get(field, "")
-        if value:
-            return str_format.format(field=value)
-        return ""
-
     description = f"""
-Job Title: {cleaned_row['title']}
+Job Title: {cleaned_row.get('title', 'No Job Title')}
 
 Job Description:
-{group_broken_paragraphs(cleaned_row['description'])}
-  """
+{group_broken_paragraphs(cleaned_row.get('description', 'No Job Description provided.'))}
+"""
 
     return description

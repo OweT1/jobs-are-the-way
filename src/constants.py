@@ -57,15 +57,16 @@ JOB_CATEGORIES_DESCRIPTIONS = {
     ),
     "OTHERS": (
         "Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, "
-        "Data Engineer, Data Scientist, or Data Analyst categories, such as Software Engineer, "
-        "Frontend/Backend Engineer, Mobile Developer, QA Engineer, or similar roles"
+        "Data Engineer, Data Scientist, or Data Analyst categories; such as Software Engineer, "
+        "Frontend/Backend Engineer, Mobile Developer, QA Engineer, or any other similar Tech roles."
+        "Tech Graduate Programmes should fall under this category as well."
         "Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, "
         "APIs, Cloud Services, DevOps Tools"
     ),
     "NOT_RELEVANT": (
         "Not Relevant - Jobs that are not relevant to the target scope, including non-tech roles "
         "(e.g. marketing, sales, business, finance, traditional engineering), or tech roles that are "
-        "not junior-level and require two or more years of full-time working experience."
-        "This includes senior and managerial roles, which typically requires a few years of experience."
+        "not junior-level (require >= 2 years of full-time working experience)."
+        "Common Words in Non-Junior Job Titles: Senior, Lead, Principal, Manager, President etc.."
     ),
 }

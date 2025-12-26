@@ -17,10 +17,14 @@ def get_category_prompt(job_details: str) -> str:
     return f"""
   <instructions>
   You are an expert system for categorising a job into exactly ONE job category based on the provided job details.
-
-  You MUST categorise the job using ONLY the definitions and technology stacks provided in <job_descriptions>.
+  The job details will usually contain the 'Job Title', and may or may not contain the 'Job Description'.
+  You MUST use the above information categorise the job using the definitions provided in <job_descriptions>.
   If multiple categories appear relevant, choose the MOST SPECIFIC and BEST-MATCHING category.
-  If the job does not clearly match any technical data-related role or if the role is of a senior/managerial/lead position, categorise it as NOT_RELEVANT.
+
+  You MUST categorise the job as 'NON_RELEVANT' if any of the conditions are met:
+  - The job does not clearly match any technical role in the Job Categories.
+  - The role is of a senior/managerial/lead/principal or similar position, even if it matches any of the technical roles.
+  - The role requires >= 2 years of working experience, even if it matches any of the technical roles.
 
   You MUST NOT infer skills or responsibilities that are not explicitly mentioned in the job details.
 
