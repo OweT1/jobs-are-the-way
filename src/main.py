@@ -37,7 +37,7 @@ async def main():
     )
 
     tasks = [
-        client.get_chat_completion(
+        client.get_chat_completion_with_retry(
             get_category_prompt(job_details=format_job_description(row))
         )
         for _, row in final_df.iterrows()
@@ -52,9 +52,16 @@ async def main():
         logger.info("Sending message to {} channel", job_category)
 
         if job_category == "NOT_RELEVANT":
-            await tele_bot.send_message(mes, settings.non_relevant_channel_id)
+            await tele_bot.send_message_with_retry(
+                mes, settings.non_relevant_channel_id
+            )
         else:
-            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+            await tele_bot.send_message_with_retry(
+                mes, settings.telegram_channel_id, thread_id
+            )
+
+        # Prevent Bot from sending too many messages at once
+        # asyncio.sleep(0.05)
 
 
 if __name__ == "__main__":
