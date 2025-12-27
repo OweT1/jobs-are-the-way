@@ -74,3 +74,6 @@ JOB_CATEGORIES_DESCRIPTIONS = {
         "such as marketing, sales, business, finance, traditional engineering etc."
     ),
 }
+
+REQUIRED_FIELDS = frozenset(["company", "title", "job_url"])
+NON_RELEVANT_CHANNEL_CATEGORIES = frozenset(["NOT_RELEVANT", "SENIOR_TECH"])

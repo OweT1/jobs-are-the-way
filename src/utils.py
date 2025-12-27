@@ -11,10 +11,8 @@ from tenacity import (
 from unstructured.cleaners.core import group_broken_paragraphs
 
 # Local Project
+from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
-
-# --- Constants --- #
-required_fields = frozenset(["company", "title", "job_url"])
 
 
 # --- Functions --- #
@@ -55,12 +53,12 @@ def get_job_thread_ids() -> dict[str, str]:
     }
 
 
-def format_job_text_message(row: pd.Series) -> str:
+def format_job_text_message(row: pd.Series, job_category: str) -> str:
     logger.info("Processing job: {}", row)
     cleaned_row = row.dropna()
 
     # Validation check for required fields - Bare minimum is company, title and job_url
-    for f in required_fields:
+    for f in REQUIRED_FIELDS:
         if f not in cleaned_row:
             return ""
     logger.info("Job {} passed validation check", cleaned_row.get("id", ""))
@@ -75,7 +73,13 @@ def format_job_text_message(row: pd.Series) -> str:
     def _boldify_text(text: str):
         return f"<b>{text}</b>"
 
-    header_component = f"""
+    header_component = (
+        _boldify_text(f"[{job_category}]")
+        if job_category in NON_RELEVANT_CHANNEL_CATEGORIES
+        else ""
+    )
+
+    body_component = f"""
 {_boldify_text("Company")}: {cleaned_row["company"]} {_format_field("({field})", "company_url")}
 
 {_boldify_text("Job Title")}: {cleaned_row["title"]}
@@ -85,6 +89,7 @@ def format_job_text_message(row: pd.Series) -> str:
 
     output_msg = f"""
 {header_component}
+{body_component}
   """
 
     return output_msg
