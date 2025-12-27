@@ -23,6 +23,7 @@ from src.utils import (
 # --- Constants --- #
 LLM_MODEL: str = OpenRouterFreeModels.XIAOMI.value
 MAX_API_CALLS_PER_MINUTE = 16
+NOT_RELEVANT_CHANNEL_CATEGORIES = frozenset(["NOT_RELEVANT", "SENIOR_TECH"])
 
 
 # --- Main function --- #
@@ -75,7 +76,7 @@ async def main():
         thread_id = job_thread_ids.get(job_category)
         logger.info("Sending message to {} channel", job_category)
 
-        if job_category == "NOT_RELEVANT":
+        if job_category in NOT_RELEVANT_CHANNEL_CATEGORIES:
             await tele_bot.send_message_with_retry(
                 mes, settings.non_relevant_channel_id
             )
