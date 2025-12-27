@@ -24,7 +24,7 @@ dev = [
   "ipykernel==7.1.0",
   "black==25.12.0",
   "isort==7.0.0",
-  "flake8==7.3.0"
+  "ruff>=0.14.10",
 ]
 
 [tool.isort]
@@ -37,3 +37,6 @@ skip = [".gitignore"]
 import_heading_stdlib = "Standard Library Packages"
 import_heading_thirdparty = "Third Party Packages"
 import_heading_firstparty = "Local Project"
+
+[tool.ruff]
+line-length=100
