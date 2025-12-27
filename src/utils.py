@@ -31,9 +31,7 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10, exceptio
     if exceptions:
         return retry(
             stop=stop_after_attempt(max_attempts),
-            wait=wait_exponential(
-                multiplier=initial_wait, min=initial_wait, max=max_wait
-            ),
+            wait=wait_exponential(multiplier=initial_wait, min=initial_wait, max=max_wait),
             retry=retry_if_exception_type(exceptions),
             reraise=True,  # Reraise the final exception after all attempts fail
             before_sleep=_retry_state_before_sleep,
@@ -41,9 +39,7 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10, exceptio
     else:
         return retry(
             stop=stop_after_attempt(max_attempts),
-            wait=wait_exponential(
-                multiplier=initial_wait, min=initial_wait, max=max_wait
-            ),
+            wait=wait_exponential(multiplier=initial_wait, min=initial_wait, max=max_wait),
             reraise=True,  # Reraise the final exception after all attempts fail
             before_sleep=_retry_state_before_sleep,
         )
@@ -80,11 +76,11 @@ def format_job_text_message(row: pd.Series) -> str:
         return f"<b>{text}</b>"
 
     header_component = f"""
-{_boldify_text("Company")}: {cleaned_row['company']} {_format_field("({field})", "company_url")}
+{_boldify_text("Company")}: {cleaned_row["company"]} {_format_field("({field})", "company_url")}
 
-{_boldify_text("Job Title")}: {cleaned_row['title']}
+{_boldify_text("Job Title")}: {cleaned_row["title"]}
 
-{_boldify_text("Application Link")}: {cleaned_row['job_url']} {_format_field("/ {field}", "job_url_direct")}
+{_boldify_text("Application Link")}: {cleaned_row["job_url"]} {_format_field("/ {field}", "job_url_direct")}
   """
 
     output_msg = f"""
@@ -98,10 +94,10 @@ def format_job_description(row: pd.Series) -> str:
     cleaned_row = row.dropna()
 
     description = f"""
-Job Title: {cleaned_row.get('title', 'No Job Title')}
+Job Title: {cleaned_row.get("title", "No Job Title")}
 
 Job Description:
-{group_broken_paragraphs(cleaned_row.get('description', 'No Job Description provided.'))}
+{group_broken_paragraphs(cleaned_row.get("description", "No Job Description provided."))}
 """
 
     return description

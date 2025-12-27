@@ -38,9 +38,7 @@ async def main():
 
     results = await asyncio.gather(*tasks)
     final_df = (
-        pd.concat(results)
-        .drop_duplicates(subset=["id"], keep="first")
-        .reset_index(drop=True)
+        pd.concat(results).drop_duplicates(subset=["id"], keep="first").reset_index(drop=True)
     )
 
     tasks = [
@@ -77,13 +75,9 @@ async def main():
         logger.info("Sending message to {} channel", job_category)
 
         if job_category in NOT_RELEVANT_CHANNEL_CATEGORIES:
-            await tele_bot.send_message_with_retry(
-                mes, settings.non_relevant_channel_id
-            )
+            await tele_bot.send_message_with_retry(mes, settings.non_relevant_channel_id)
         else:
-            await tele_bot.send_message_with_retry(
-                mes, settings.telegram_channel_id, thread_id
-            )
+            await tele_bot.send_message_with_retry(mes, settings.telegram_channel_id, thread_id)
 
 
 if __name__ == "__main__":

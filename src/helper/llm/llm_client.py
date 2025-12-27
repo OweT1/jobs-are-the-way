@@ -59,7 +59,7 @@ class OpenRouterLLMClient:
                 prompt=prompt,
                 model=model,
                 reasoning_enabled=reasoning_enabled,
-                **kwargs
+                **kwargs,
             )
 
         return await fn()

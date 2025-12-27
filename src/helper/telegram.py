@@ -27,9 +27,7 @@ class TeleBot:
     async def send_message(self, text: str, chat_id: int, thread_id: int = None):
         return await self._send_message(text=text, chat_id=chat_id, thread_id=thread_id)
 
-    async def send_message_with_retry(
-        self, text: str, chat_id: int, thread_id: int = None
-    ):
+    async def send_message_with_retry(self, text: str, chat_id: int, thread_id: int = None):
         retry_decorator = create_retry_decorator(
             max_attempts=5,
             initial_wait=5,
@@ -43,8 +41,6 @@ class TeleBot:
 
         @retry_decorator
         async def fn():
-            return await self._send_message(
-                text=text, chat_id=chat_id, thread_id=thread_id
-            )
+            return await self._send_message(text=text, chat_id=chat_id, thread_id=thread_id)
 
         return await fn()

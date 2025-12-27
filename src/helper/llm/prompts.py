@@ -5,8 +5,7 @@ from src.constants import JOB_CATEGORIES, JOB_CATEGORIES_DESCRIPTIONS
 # --- Helper --- #
 def get_job_descriptions() -> str:
     job_descriptions = [
-        f"{job}: {description}"
-        for job, description in JOB_CATEGORIES_DESCRIPTIONS.items()
+        f"{job}: {description}" for job, description in JOB_CATEGORIES_DESCRIPTIONS.items()
     ]
     output = "\n\n".join(job_descriptions)
     return output
