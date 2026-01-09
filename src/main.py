@@ -7,7 +7,7 @@ import pandas as pd
 from loguru import logger
 
 # Local Project
-from src.constants import ALL_ROLES, NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
+from src.constants import ALL_ROLES
 from src.core.config import settings
 from src.helper.job_search import search_jobs
 from src.helper.llm.constants import OpenRouterFreeModels
@@ -19,6 +19,7 @@ from src.utils import (
     format_job_description,
     get_job_thread_ids,
     get_unique_objs,
+    process_df,
 )
 
 # --- Constants --- #
@@ -68,21 +69,19 @@ async def main():
     results = await asyncio.gather(*tasks)
     final_df["JOB_CATEGORY"] = results
 
-    # Clean Dataframe
-    final_df = final_df.dropna(subset=list(REQUIRED_FIELDS))
-    logger.info("Final df: {}", final_df)
+    # Clean & Process Dataframe
+    final_df = process_df(final_df)
+    logger.info("Final df:")
+    logger.info(final_df)
 
     for job_category in get_unique_objs(final_df["JOB_CATEGORY"]):
         job_df = final_df[final_df["JOB_CATEGORY"] == job_category]
-        thread_id = job_thread_ids.get(job_category)
+        thread_id = job_thread_ids.get(job_category, settings.not_relevant_thread_id)
         logger.info("Sending message to {} channel", job_category)
         for company in get_unique_objs(job_df["company"]):
             company_df = job_df[job_df["company"] == company]
             mes = format_company_message(company_df=company_df, company=company)
-            if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
-                await tele_bot.send_message(mes, settings.non_relevant_channel_id)
-            else:
-                await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
     # for _, row in final_df.iterrows():
     #     job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")

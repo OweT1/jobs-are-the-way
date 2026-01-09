@@ -11,6 +11,7 @@ from tenacity import (
 from unstructured.cleaners.core import group_broken_paragraphs
 
 # Local Project
+from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
 
 
@@ -49,6 +50,13 @@ def get_job_thread_ids() -> dict[str, str]:
         "DATA_SCIENTIST": settings.data_scientist_thread_id,
         "DATA_ANALYST": settings.data_analyst_thread_id,
         "OTHERS": settings.others_thread_id,
+        "AIML_ENGINEER_INTERN": settings.aiml_engineer_intern_thread_id,
+        "DATA_ENGINEER_INTERN": settings.data_engineer_intern_thread_id,
+        "DATA_SCIENTIST_INTERN": settings.data_scientist_intern_thread_id,
+        "DATA_ANALYST_INTERN": settings.data_analyst_intern_thread_id,
+        "OTHERS_INTERN": settings.others_intern_thread_id,
+        "SENIOR_TECH": settings.senior_tech_thread_id,
+        "NOT_RELEVANT": settings.not_relevant_thread_id,
     }
 
 
@@ -84,9 +92,9 @@ def format_company_message(company_df: pd.DataFrame, company: str) -> str:
     logger.info("Processing company {}, using {}", company, company_df)
     company_urls = get_unique_objs(company_df["company_url"])
     company_url = company_urls[0] if company_urls else ""
-    header_component = f"""
-    {_boldify_text("Company")}: {company} {_format_field("({field})", company_url)}
-    """
+    header_component = (
+        f"{_boldify_text('Company')}: {company} {_format_field('({field})', company_url)}"
+    )
 
     job_messages = []
     for job_title in get_unique_objs(company_df["title"]):
@@ -107,3 +115,58 @@ def format_company_message(company_df: pd.DataFrame, company: str) -> str:
   """
 
     return output_msg
+
+
+def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
+    def _clean_df(df):
+        return df.dropna(subset=list(REQUIRED_FIELDS))
+
+    def _add_intern(df):
+        def _process_job_category(job_category: str, job_title: str):
+            if (
+                job_category not in NON_RELEVANT_CHANNEL_CATEGORIES
+                and "intern" in job_title.lower()
+                and not job_category.endswith("_INTERN")
+            ):
+                logger.debug(
+                    "Job Title of {} with job category {} processed as Intern role",
+                    job_title,
+                    job_category,
+                )
+                return job_category + "_INTERN"
+            return job_category
+
+        df["JOB_CATEGORY"] = df.apply(
+            lambda row: _process_job_category(
+                job_category=row["JOB_CATEGORY"], job_title=row["title"]
+            ),
+            axis=1,
+        )
+        return df
+
+    def _validate_senior_role(df):
+        def _check_senior_role(job_category: str, job_title: str):
+            if (
+                job_category not in NON_RELEVANT_CHANNEL_CATEGORIES
+                and "senior" in job_title.lower()
+            ):
+                logger.debug(
+                    "Job Title of {} with job category {} processed as Senior role",
+                    job_title,
+                    job_category,
+                )
+                return "SENIOR_TECH"
+            return job_category
+
+        df["JOB_CATEGORY"] = df.apply(
+            lambda row: _check_senior_role(
+                job_category=row["JOB_CATEGORY"], job_title=row["title"]
+            ),
+            axis=1,
+        )
+        return df
+
+    final_df = _clean_df(final_df)
+    final_df = _add_intern(final_df)
+    final_df = _validate_senior_role(final_df)
+    return final_df

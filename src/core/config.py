@@ -46,7 +46,13 @@ class Settings(BaseSettings):
     data_scientist_thread_id: str
     data_analyst_thread_id: str
     others_thread_id: str
-    non_relevant_channel_id: str
+    aiml_engineer_intern_thread_id: str
+    data_engineer_intern_thread_id: str
+    data_scientist_intern_thread_id: str
+    data_analyst_intern_thread_id: str
+    others_intern_thread_id: str
+    senior_tech_thread_id: str
+    not_relevant_thread_id: str
 
 
 @lru_cache
