@@ -11,7 +11,6 @@ from tenacity import (
 from unstructured.cleaners.core import group_broken_paragraphs
 
 # Local Project
-from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
 
 
@@ -53,46 +52,19 @@ def get_job_thread_ids() -> dict[str, str]:
     }
 
 
-def format_job_text_message(row: pd.Series, job_category: str) -> str:
-    logger.info("Processing job: {}", row)
-    cleaned_row = row.dropna()
+def _boldify_text(text: str):
+    return f"<b>{text}</b>"
 
-    # Validation check for required fields - Bare minimum is company, title and job_url
-    for f in REQUIRED_FIELDS:
-        if f not in cleaned_row:
-            return ""
-    logger.info("Job {} passed validation check", cleaned_row.get("id", ""))
 
-    def _format_field(str_format: str, field: str):
-        logger.info("Filling for formatted string: {}", str_format)
-        value = cleaned_row.get(field, "")
-        if value:
-            return str_format.format(field=value)
-        return ""
+def _format_field(str_format: str, value: str):
+    logger.info("Filling for formatted string: {}", str_format)
+    if value:
+        return str_format.format(field=value)
+    return ""
 
-    def _boldify_text(text: str):
-        return f"<b>{text}</b>"
 
-    header_component = (
-        _boldify_text(f"[{job_category}]")
-        if job_category in NON_RELEVANT_CHANNEL_CATEGORIES
-        else ""
-    )
-
-    body_component = f"""
-{_boldify_text("Company")}: {cleaned_row["company"]} {_format_field("({field})", "company_url")}
-
-{_boldify_text("Job Title")}: {cleaned_row["title"]}
-
-{_boldify_text("Application Link")}: {cleaned_row["job_url"]} {_format_field("/ {field}", "job_url_direct")}
-  """
-
-    output_msg = f"""
-{header_component}
-{body_component}
-  """
-
-    return output_msg
+def get_unique_objs(rows: pd.Series) -> list:
+    return list(rows.dropna().unique())
 
 
 def format_job_description(row: pd.Series) -> str:
@@ -106,3 +78,32 @@ Job Description:
 """
 
     return description
+
+
+def format_company_message(company_df: pd.DataFrame, company: str) -> str:
+    logger.info("Processing company {}, using {}", company, company_df)
+    company_urls = get_unique_objs(company_df["company_url"])
+    company_url = company_urls[0] if company_urls else ""
+    header_component = f"""
+    {_boldify_text("Company")}: {company} {_format_field("({field})", company_url)}
+    """
+
+    job_messages = []
+    for job_title in get_unique_objs(company_df["title"]):
+        urls: list[str] = get_unique_objs(company_df[company_df["title"] == job_title]["job_url"])
+        output_url: str = " | ".join(urls)
+
+        job_message = f"""
+{_boldify_text("Job Title")}: {job_title}
+{_boldify_text("Application Link")}: {output_url}
+        """
+        job_messages.append(job_message)
+
+    body_component = "\n".join(job_messages)
+
+    output_msg = f"""
+{header_component}
+{body_component}
+  """
+
+    return output_msg

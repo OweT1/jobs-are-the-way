@@ -7,7 +7,7 @@ import pandas as pd
 from loguru import logger
 
 # Local Project
-from src.constants import ALL_ROLES, NON_RELEVANT_CHANNEL_CATEGORIES
+from src.constants import ALL_ROLES, NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
 from src.helper.job_search import search_jobs
 from src.helper.llm.constants import OpenRouterFreeModels
@@ -15,9 +15,10 @@ from src.helper.llm.llm_client import OpenRouterLLMClient
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (
+    format_company_message,
     format_job_description,
-    format_job_text_message,
     get_job_thread_ids,
+    get_unique_objs,
 )
 
 # --- Constants --- #
@@ -67,16 +68,32 @@ async def main():
     results = await asyncio.gather(*tasks)
     final_df["JOB_CATEGORY"] = results
 
-    for _, row in final_df.iterrows():
-        job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")
-        mes = format_job_text_message(row, job_category)
+    # Clean Dataframe
+    final_df = final_df.dropna(subset=list(REQUIRED_FIELDS))
+    logger.info("Final df: {}", final_df)
+
+    for job_category in get_unique_objs(final_df["JOB_CATEGORY"]):
+        job_df = final_df[final_df["JOB_CATEGORY"] == job_category]
         thread_id = job_thread_ids.get(job_category)
         logger.info("Sending message to {} channel", job_category)
+        for company in get_unique_objs(job_df["company"]):
+            company_df = job_df[job_df["company"] == company]
+            mes = format_company_message(company_df=company_df, company=company)
+            if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
+                await tele_bot.send_message(mes, settings.non_relevant_channel_id)
+            else:
+                await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-        if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
-            await tele_bot.send_message(mes, settings.non_relevant_channel_id)
-        else:
-            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+    # for _, row in final_df.iterrows():
+    #     job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")
+    #     mes = format_job_text_message(row, job_category)
+    #     thread_id = job_thread_ids.get(job_category)
+    #     logger.info("Sending message to {} channel", job_category)
+
+    # if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
+    #     await tele_bot.send_message(mes, settings.non_relevant_channel_id)
+    # else:
+    #     await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
 
 if __name__ == "__main__":
