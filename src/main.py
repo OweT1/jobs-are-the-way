@@ -83,17 +83,6 @@ async def main():
             mes = format_company_message(company_df=company_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-    # for _, row in final_df.iterrows():
-    #     job_category = row.get("JOB_CATEGORY", "NOT_RELEVANT")
-    #     mes = format_job_text_message(row, job_category)
-    #     thread_id = job_thread_ids.get(job_category)
-    #     logger.info("Sending message to {} channel", job_category)
-
-    # if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
-    #     await tele_bot.send_message(mes, settings.non_relevant_channel_id)
-    # else:
-    #     await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
-
 
 if __name__ == "__main__":
     asyncio.run(main())
