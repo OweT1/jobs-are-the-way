@@ -9,7 +9,7 @@ from loguru import logger
 # Local Project
 from src.constants import ALL_ROLES, NON_RELEVANT_CHANNEL_CATEGORIES
 from src.core.config import settings
-from src.helper.job_search import search_jobs_with_retry
+from src.helper.job_search import search_jobs
 from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.llm_client import OpenRouterLLMClient
 from src.helper.llm.prompts import get_category_prompt
@@ -33,7 +33,7 @@ async def main():
 
     logger.info("Searching for jobs...")
 
-    tasks = [asyncio.to_thread(search_jobs_with_retry, role) for role in ALL_ROLES]
+    tasks = [asyncio.to_thread(search_jobs, role) for role in ALL_ROLES]
 
     results = await asyncio.gather(*tasks)
     final_df = (
@@ -41,7 +41,7 @@ async def main():
     )
 
     tasks = [
-        client.get_chat_completion_with_retry(
+        client.get_chat_completion(
             prompt=get_category_prompt(job_details=format_job_description(row)),
             model=LLM_MODEL,
             reasoning_enabled=True,
@@ -74,9 +74,9 @@ async def main():
         logger.info("Sending message to {} channel", job_category)
 
         if job_category in NON_RELEVANT_CHANNEL_CATEGORIES:
-            await tele_bot.send_message_with_retry(mes, settings.non_relevant_channel_id)
+            await tele_bot.send_message(mes, settings.non_relevant_channel_id)
         else:
-            await tele_bot.send_message_with_retry(mes, settings.telegram_channel_id, thread_id)
+            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
 
 if __name__ == "__main__":

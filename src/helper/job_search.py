@@ -9,7 +9,7 @@ from src.utils import create_retry_decorator
 
 
 # --- Functions --- #
-def search_jobs_with_retry(
+def search_jobs(
     search_term: str,
     hours_old: int = settings.hours_old,
     location: str = settings.default_location,
@@ -17,7 +17,7 @@ def search_jobs_with_retry(
     retry_decorator = create_retry_decorator()
 
     @retry_decorator
-    def search_jobs() -> pd.DataFrame:
+    def _search_jobs() -> pd.DataFrame:
         jobs = scrape_jobs(
             site_name=["indeed", "linkedin", "zip_recruiter", "google"],
             search_term=search_term,
@@ -31,4 +31,4 @@ def search_jobs_with_retry(
         logger.info("Found {} jobs for search term {}", len(jobs), search_term)
         return jobs
 
-    return search_jobs()
+    return _search_jobs()
