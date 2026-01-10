@@ -8,12 +8,19 @@ AIML_ENGINEER_ROLES = [
 DATA_ENGINEER_ROLES = ["Data Engineer"]
 DATA_SCIENTIST_ROLES = ["Data Scientist", "Data Science"]
 DATA_ANALYST_ROLES = ["Data Analyst", "Business Analyst"]
+SOFTWARE_ENGINEER_ROLES = [
+    "Software Engineer",
+    "Backend Engineer",
+    "Frontend Engineer",
+    "Fullstack Engineer",
+]
 
 ALL_ROLES = [
     *AIML_ENGINEER_ROLES,
     *DATA_ENGINEER_ROLES,
     *DATA_SCIENTIST_ROLES,
     *DATA_ANALYST_ROLES,
+    *SOFTWARE_ENGINEER_ROLES,
 ]
 
 JOB_CATEGORIES = [
@@ -21,6 +28,7 @@ JOB_CATEGORIES = [
     "DATA_ENGINEER",
     "DATA_SCIENTIST",
     "DATA_ANALYST",
+    "SOFTWARE_ENGINEER",
     "OTHERS",
     "SENIOR_TECH",
     "NOT_RELEVANT",
@@ -51,11 +59,17 @@ JOB_CATEGORIES_DESCRIPTIONS = {
         Common Job Title(s): Data Analyst / Business Analyst
         Common Technology Stack/Terms: SQL, Excel, BI Tools (Tableau, Power BI, Looker), Python, Data Visualization, Reporting, Dashboards
     """,
+    "SOFTWARE_ENGINEER": """
+        Software Engineer - Design, build, test, and maintain software applications and systems. This includes developing backend services, frontend interfaces, or full-stack features, while writing clean, efficient, and maintainable code. Some work that typical Software Engineers do include designing and consuming APIs, working with various databases to store, retrieve and process data, as well as debugging and optimisation of code performance.
+
+        Common Job Title(s): Software Engineer / Software Development Engineer / Software Developer / Backend Engineer / Backend Developer / Frontend Engineer / Frontend Developer / Fullstack Engineer / Fullstack Developer
+        Common Technology Stack/Terms: Java, Python, C++, Go, JavaScript, TypeScript, RESTful APIs, Microservices, Distributed Systems, React, Angular, Vue, HTML, CSS, SQL (MySQL / PostgreSQL), NoSQL, Redis, AWS, GCP, Azure, Docker, Kubernetes, Git, CI/CD, Linux, Monitoring, Unit Testing, Integration Testing, System Design
+    """,
     "OTHERS": """
-        Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, Data Engineer, Data Scientist, or Data Analyst categories; such as Software Engineer, Frontend/Backend Engineer, Mobile Developer, QA Engineer, or any other similar Technology roles.
+        Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, Data Engineer, Data Scientist, Data Analyst or Software Engineer categories; such as Mobile Developer, QA Engineer, or any other similar Technology roles.
         Additionally, Tech Graduate Programmes / General Technology Internship Programmes should fall under this category as well.
 
-        Common Job Title(s): Software Engineer / Backend Engineer / Frontend Engineer / Fullstack Engineer / Mobile Developer / QA Engineer / Site Reliability Engineer / IT Engineer
+        Common Job Title(s): Mobile Developer / QA Engineer / DevOps Engineer / Site Reliability Engineer / IT Engineer
         Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, APIs, Cloud Services, DevOps Tools
     """,
     "SENIOR_TECH": """
