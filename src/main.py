@@ -41,6 +41,10 @@ async def main():
         pd.concat(results).drop_duplicates(subset=["id"], keep="first").reset_index(drop=True)
     )
 
+    # Exit if no jobs were found
+    if len(final_df) == 0:
+        return
+
     tasks = [
         client.get_chat_completion(
             prompt=get_category_prompt(job_details=format_job_description(row)),
