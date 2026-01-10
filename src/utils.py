@@ -43,8 +43,8 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10, exceptio
         )
 
 
-def get_job_thread_ids() -> dict[str, str]:
-    return {
+def get_job_thread_id(job_category: str) -> dict[str, str]:
+    job_thread_ids = {
         "AIML_ENGINEER": settings.aiml_engineer_thread_id,
         "DATA_ENGINEER": settings.data_engineer_thread_id,
         "DATA_SCIENTIST": settings.data_scientist_thread_id,
@@ -60,6 +60,7 @@ def get_job_thread_ids() -> dict[str, str]:
         "SENIOR_TECH": settings.senior_tech_thread_id,
         "NOT_RELEVANT": settings.not_relevant_thread_id,
     }
+    return job_thread_ids.get(job_category, settings.not_relevant_thread_id)
 
 
 def _boldify_text(text: str):

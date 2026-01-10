@@ -17,7 +17,7 @@ from src.helper.telegram import TeleBot
 from src.utils import (
     format_company_message,
     format_job_description,
-    get_job_thread_ids,
+    get_job_thread_id,
     get_unique_objs,
     process_df,
 )
@@ -30,7 +30,6 @@ MAX_API_CALLS_PER_MINUTE = 16
 # --- Main function --- #
 async def main():
     tele_bot = TeleBot()
-    job_thread_ids = get_job_thread_ids()
     client = OpenRouterLLMClient()
 
     logger.info("Searching for jobs...")
@@ -76,7 +75,7 @@ async def main():
 
     for job_category in get_unique_objs(final_df["JOB_CATEGORY"]):
         job_df = final_df[final_df["JOB_CATEGORY"] == job_category]
-        thread_id = job_thread_ids.get(job_category, settings.not_relevant_thread_id)
+        thread_id = get_job_thread_id(job_category)
         logger.info("Sending message to {} channel", job_category)
         for company in get_unique_objs(job_df["company"]):
             company_df = job_df[job_df["company"] == company]
