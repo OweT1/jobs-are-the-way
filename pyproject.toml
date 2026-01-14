@@ -17,6 +17,8 @@ dependencies = [
     "openai>=2.14.0",
     "unstructured>=0.18.21",
     "pydantic-settings>=2.12.0",
+    "sqlalchemy[asyncio]>=2.0.45",
+    "asyncpg>=0.31.0",
 ]
 
 [project.optional-dependencies]

@@ -139,9 +139,9 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
                 return job_category + "_INTERN"
             return job_category
 
-        df["JOB_CATEGORY"] = df.apply(
+        df["job_category"] = df.apply(
             lambda row: _process_job_category(
-                job_category=row["JOB_CATEGORY"], job_title=row["title"]
+                job_category=row["job_category"], job_title=row["title"]
             ),
             axis=1,
         )
@@ -161,9 +161,9 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
                 return "SENIOR_TECH"
             return job_category
 
-        df["JOB_CATEGORY"] = df.apply(
+        df["job_category"] = df.apply(
             lambda row: _check_senior_role(
-                job_category=row["JOB_CATEGORY"], job_title=row["title"]
+                job_category=row["job_category"], job_title=row["title"]
             ),
             axis=1,
         )

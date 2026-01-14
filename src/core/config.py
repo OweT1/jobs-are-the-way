@@ -56,6 +56,13 @@ class Settings(BaseSettings):
     senior_tech_thread_id: str
     not_relevant_thread_id: str
 
+    # Postgres
+    postgres_port: str
+    postgres_user: str
+    postgres_db: str
+    postgres_password: str
+    postgres_db_url: str
+
 
 @lru_cache
 def get_settings():

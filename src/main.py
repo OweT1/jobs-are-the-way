@@ -70,7 +70,7 @@ async def main():
     #     results = await asyncio.gather(*tasks)
 
     results = await asyncio.gather(*tasks)
-    final_df["JOB_CATEGORY"] = results
+    final_df["job_category"] = results
 
     # Clean & Process Dataframe
     final_df = process_df(final_df)
