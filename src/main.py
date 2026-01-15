@@ -77,8 +77,8 @@ async def main():
     logger.info("Final df:")
     logger.info(final_df)
 
-    for job_category in get_unique_objs(final_df["JOB_CATEGORY"]):
-        job_df = final_df[final_df["JOB_CATEGORY"] == job_category]
+    for job_category in get_unique_objs(final_df["job_category"]):
+        job_df = final_df[final_df["job_category"] == job_category]
         thread_id = get_job_thread_id(job_category)
         logger.info("Sending message to {} channel", job_category)
         for company in get_unique_objs(job_df["company"]):
