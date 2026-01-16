@@ -1,6 +1,6 @@
 # Standard Library Packages
 from enum import Enum
-from functools import lru_cache
+from functools import lru_cache  # noqa
 from typing import Literal
 
 # Third Party Packages
@@ -60,7 +60,7 @@ class Settings(BaseSettings):
     postgres_db_url: str
 
 
-@lru_cache
+# @lru_cache
 def get_settings():
     return Settings()
 
