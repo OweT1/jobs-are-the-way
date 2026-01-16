@@ -1,6 +1,7 @@
 # Third Party Packages
 from loguru import logger
-from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 # Local Project
 from src.core.config import settings
@@ -12,11 +13,9 @@ class PostgresDB:
     def __init__(self):
         self.database_url = settings.postgres_db_url
 
-        self.engine = create_async_engine(self.database_url, echo=True)
-        self.session = async_sessionmaker(self.engine, expire_on_commit=False)
+        self.engine = create_engine(self.database_url, echo=True)
+        self.session = sessionmaker(self.engine, expire_on_commit=False)
 
-    async def setup(self):
-        async with self.engine.begin() as conn:
-            await conn.run_sync(Base.metadata.create_all)
-
+    def setup(self):
+        Base.metadata.create_all(self.engine)
         logger.info("DB successfully set-up!")

@@ -122,6 +122,19 @@ def format_company_message(company_df: pd.DataFrame, company: str) -> str:
     return output_msg
 
 
+def preprocess_df(final_df: pd.DataFrame) -> pd.DataFrame:
+    def _de_duplicate_rows(df):
+        return df.drop_duplicates(subset=["id"], keep="first").reset_index(drop=True)
+
+    def _rename_cols(df):
+        df = df.rename(columns={"id": "job_id"})
+        return df
+
+    final_df = _de_duplicate_rows(final_df)
+    final_df = _rename_cols(final_df)
+    return final_df
+
+
 def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
     def _clean_df(df):
         return df.dropna(subset=list(REQUIRED_FIELDS))
@@ -172,10 +185,6 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
         return df
 
     # DB processing
-    def _rename_cols(df):
-        df = df.rename(columns={"id": "job_id"})
-        return df
-
     def _filter_cols(df):
         table_cols = _get_table_columns()
         df = df.filter(items=table_cols, axis=1)
@@ -188,7 +197,6 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
     final_df = _clean_df(final_df)
     final_df = _add_intern(final_df)
     final_df = _validate_senior_role(final_df)
-    final_df = _rename_cols(final_df)
     final_df = _filter_cols(final_df)
     final_df = _replace_nan(final_df)
     return final_df

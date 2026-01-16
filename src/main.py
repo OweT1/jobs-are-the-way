@@ -21,6 +21,7 @@ from src.utils import (
     format_job_description,
     get_job_thread_id,
     get_unique_objs,
+    preprocess_df,
     process_df,
 )
 
@@ -34,16 +35,20 @@ async def main():
     tele_bot = TeleBot()
     client = OpenRouterLLMClient()
     db = PostgresDB()
-    await db.setup()  # set up db
+    db.setup()  # set up db
 
     logger.info("Searching for jobs...")
 
     tasks = [asyncio.to_thread(search_jobs, role) for role in ALL_ROLES]
 
     results = await asyncio.gather(*tasks)
-    final_df = (
-        pd.concat(results).drop_duplicates(subset=["id"], keep="first").reset_index(drop=True)
-    )
+    final_df = pd.concat(results)
+    final_df = preprocess_df(final_df)
+
+    # De-duplicate dataframe rows against DB
+    logger.info("Before deduplicating against DB: {} rows", len(final_df))
+    final_df = await check_jobs_existence(db, final_df)
+    logger.info("After deduplicating against DB: {} rows", len(final_df))
 
     # Exit if no jobs were found
     if len(final_df) == 0:
@@ -81,11 +86,6 @@ async def main():
     logger.info("Final df:")
     logger.info(final_df)
 
-    # De-duplicate dataframe rows against DB
-    logger.info("Before deduplicating against DB: {} rows", len(final_df))
-    final_df = await check_jobs_existence(db, final_df)
-    logger.info("After deduplicating against DB: {} rows", len(final_df))
-
     for job_category in get_unique_objs(final_df["job_category"]):
         job_df = final_df[final_df["job_category"] == job_category]
         thread_id = get_job_thread_id(job_category)
@@ -97,7 +97,7 @@ async def main():
 
     # Add the current dataframe rows to the database
     logger.info("Adding {} rows to 'job_results' table", len(final_df))
-    await add_jobs(db, final_df)
+    add_jobs(db, final_df)
 
 
 if __name__ == "__main__":

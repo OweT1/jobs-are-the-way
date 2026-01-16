@@ -57,15 +57,7 @@ class Settings(BaseSettings):
     not_relevant_thread_id: str
 
     # Postgres
-    postgres_host: str
-    postgres_port: str
-    postgres_user: str
-    postgres_db: str
-    postgres_password: str
-
-    @property
-    def postgres_db_url(self) -> str:
-        return f"postgresql+asyncpg://{self.postgres_user}:{self.postgres_password}@{self.postgres_host}:{self.postgres_port}/{self.postgres_db}"
+    postgres_db_url: str
 
 
 @lru_cache
