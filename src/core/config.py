@@ -60,7 +60,7 @@ class Settings(BaseSettings):
     postgres_db_url: str
 
 
-# @lru_cache
+@lru_cache
 def get_settings():
     return Settings()
 
