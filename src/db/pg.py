@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 # Local Project
 from src.core.config import settings
+from src.db import models  # noqa
 from src.db.base import Base
 
 
