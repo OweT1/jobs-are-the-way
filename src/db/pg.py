@@ -1,4 +1,5 @@
 # Third Party Packages
+from loguru import logger
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 # Local Project
@@ -17,4 +18,4 @@ class PostgresDB:
         async with self.engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
-        print("postgresdb successfully set-up!")
+        logger.info("DB successfully set-up!")
