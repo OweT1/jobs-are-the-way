@@ -9,6 +9,8 @@ from loguru import logger
 # Local Project
 from src.constants import ALL_ROLES
 from src.core.config import settings
+from src.db.job_results import add_jobs, check_jobs_existence
+from src.db.pg import PostgresDB
 from src.helper.job_search import search_jobs
 from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.llm_client import OpenRouterLLMClient
@@ -31,6 +33,8 @@ MAX_API_CALLS_PER_MINUTE = 16
 async def main():
     tele_bot = TeleBot()
     client = OpenRouterLLMClient()
+    db = PostgresDB()
+    await db.setup()  # set up db
 
     logger.info("Searching for jobs...")
 
@@ -77,6 +81,11 @@ async def main():
     logger.info("Final df:")
     logger.info(final_df)
 
+    # De-duplicate dataframe rows against DB
+    logger.info("Before deduplicating against DB: {} rows", len(final_df))
+    final_df = await check_jobs_existence(db, final_df)
+    logger.info("After deduplicating against DB: {} rows", len(final_df))
+
     for job_category in get_unique_objs(final_df["job_category"]):
         job_df = final_df[final_df["job_category"] == job_category]
         thread_id = get_job_thread_id(job_category)
@@ -85,6 +94,10 @@ async def main():
             company_df = job_df[job_df["company"] == company]
             mes = format_company_message(company_df=company_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+
+    # Add the current dataframe rows to the database
+    logger.info("Adding {} rows to 'job_results' table", len(final_df))
+    await add_jobs(db, final_df)
 
 
 if __name__ == "__main__":
