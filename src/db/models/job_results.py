@@ -7,7 +7,7 @@ from sqlalchemy import Column, DateTime, Text
 from sqlalchemy.dialects.postgresql import UUID  # noqa
 
 # Local Project
-from src.db.base_class import Base
+from src.db.models.base import Base
 
 
 # define JobResults table - stores all the unique job search results

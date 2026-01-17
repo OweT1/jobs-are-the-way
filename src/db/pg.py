@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 # Local Project
 from src.core.config import settings
-from src.db.base import Base
+from src.db.models.base import Base
 
 
 class PostgresDB:
