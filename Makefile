@@ -23,7 +23,7 @@ db-it:
 	-U $(POSTGRES_USER)
 
 run:
-	uv run python -m src.main
+	uv run sh -c "alembic upgrade head; python -m src.main"
 
 quick-sync: dev
 	@echo "Sync finished"
