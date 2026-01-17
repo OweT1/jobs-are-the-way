@@ -1,6 +1,6 @@
 # Standard Library Packages
 from enum import Enum
-from functools import lru_cache
+from functools import lru_cache  # noqa
 from typing import Literal
 
 # Third Party Packages
@@ -57,14 +57,7 @@ class Settings(BaseSettings):
     not_relevant_thread_id: str
 
     # Postgres
-    postgres_port: str
-    postgres_user: str
-    postgres_db: str
-    postgres_password: str
-
-    @property
-    def postgres_db_url(self) -> str:
-        return f"postgresql+asyncpg://${self.postgres_user}:${self.postgres_password}@localhost:${self.postgres_port}/${self.postgres_db}"
+    postgres_db_url: str
 
 
 @lru_cache

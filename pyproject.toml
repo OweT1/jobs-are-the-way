@@ -19,6 +19,7 @@ dependencies = [
     "pydantic-settings>=2.12.0",
     "sqlalchemy[asyncio]>=2.0.45",
     "asyncpg>=0.31.0",
+    "psycopg2>=2.9.11",
 ]
 
 [project.optional-dependencies]
