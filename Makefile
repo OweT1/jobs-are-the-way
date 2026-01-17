@@ -18,6 +18,10 @@ db:
 	-e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
 	-d postgres
 
+db-it:
+	docker exec -it $(POSTGRES_DB) psql \
+	-U $(POSTGRES_USER)
+
 run:
 	uv run python -m src.main
 

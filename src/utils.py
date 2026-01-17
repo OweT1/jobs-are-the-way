@@ -1,4 +1,5 @@
 # Third Party Packages
+import numpy as np
 import pandas as pd
 from loguru import logger
 from tenacity import (
@@ -13,6 +14,7 @@ from unstructured.cleaners.core import group_broken_paragraphs
 # Local Project
 from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
+from src.db.job_results import _get_table_columns
 
 
 # --- Functions --- #
@@ -120,6 +122,19 @@ def format_company_message(company_df: pd.DataFrame, company: str) -> str:
     return output_msg
 
 
+def preprocess_df(final_df: pd.DataFrame) -> pd.DataFrame:
+    def _de_duplicate_rows(df):
+        return df.drop_duplicates(subset=["id"], keep="first").reset_index(drop=True)
+
+    def _rename_cols(df):
+        df = df.rename(columns={"id": "job_id"})
+        return df
+
+    final_df = _de_duplicate_rows(final_df)
+    final_df = _rename_cols(final_df)
+    return final_df
+
+
 def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
     def _clean_df(df):
         return df.dropna(subset=list(REQUIRED_FIELDS))
@@ -169,7 +184,19 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
         )
         return df
 
+    # DB processing
+    def _filter_cols(df):
+        table_cols = _get_table_columns()
+        df = df.filter(items=table_cols, axis=1)
+        return df
+
+    def _replace_nan(df):
+        df = df.replace({np.nan: None})
+        return df
+
     final_df = _clean_df(final_df)
     final_df = _add_intern(final_df)
     final_df = _validate_senior_role(final_df)
+    final_df = _filter_cols(final_df)
+    final_df = _replace_nan(final_df)
     return final_df
