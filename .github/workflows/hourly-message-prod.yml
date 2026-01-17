@@ -52,5 +52,5 @@ jobs:
           enable-cache: true # Uses GitHub's cache for uv dependencies automatically
           version: "latest"
 
-      - name: Run Script
-        run: uv run python -m src.main # 'uv run' automatically handles environment syncing and running the module
+      - name: Run Database Migrations and Script
+        run: uv run sh -c "alembic upgrade head; python -m src.main" # 'uv run' automatically handles environment syncing and running the module

@@ -5,7 +5,6 @@ from sqlalchemy.orm import sessionmaker
 
 # Local Project
 from src.core.config import settings
-from src.db import models  # noqa
 from src.db.base import Base
 
 
