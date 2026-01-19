@@ -35,7 +35,6 @@ async def main():
     tele_bot = TeleBot()
     client = OpenRouterLLMClient()
     db = PostgresDB()
-    db.setup()  # set up db
 
     logger.info("Searching for jobs...")
 
