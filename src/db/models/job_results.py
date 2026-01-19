@@ -15,7 +15,7 @@ class JobResults(Base):
     __tablename__ = "job_results"
 
     # id = Column(UUID(as_uuid=False), default=uuid.uuid4)
-    job_id = Column(Text, primary_key=True, default=str(uuid.uuid4()))
+    job_id = Column(Text, primary_key=True, default=str(uuid.uuid4()), index=True)
     company = Column(Text, nullable=False)
     company_url = Column(Text, default="")
     title = Column(Text, nullable=False)
