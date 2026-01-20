@@ -11,7 +11,7 @@ from src.utils import create_retry_decorator
 # --- Functions --- #
 def search_jobs(
     search_term: str,
-    hours_old: int = settings.hours_old,
+    hours_old: int,
     location: str = settings.default_location,
 ) -> pd.DataFrame:
     retry_decorator = create_retry_decorator()

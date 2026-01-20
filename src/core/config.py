@@ -19,7 +19,6 @@ class Environment(Enum):
 DEFAULT_ENVIRONMENT = Environment.DEV.value
 ENVIRONMENTS = [env.value for env in Environment]
 
-DEFAULT_HOURS_OLD = 1
 DEFAULT_LOCATION = "Singapore"
 
 
@@ -35,7 +34,6 @@ class Settings(BaseSettings):
     openrouter_base_url: str
 
     # JobSpy
-    hours_old: int = DEFAULT_HOURS_OLD
     default_location: str = DEFAULT_LOCATION
 
     # Telegram
