@@ -9,7 +9,7 @@ from loguru import logger
 # Local Project
 from src.constants import ALL_ROLES
 from src.core.config import settings
-from src.db.job_results import add_jobs, check_jobs_existence
+from src.db.job_results import add_jobs, check_jobs_existence, get_hours_old
 from src.db.pg import PostgresDB
 from src.helper.job_search import search_jobs
 from src.helper.llm.constants import OpenRouterFreeModels
@@ -35,10 +35,12 @@ async def main():
     tele_bot = TeleBot()
     client = OpenRouterLLMClient()
     db = PostgresDB()
+    hours_old: int = get_hours_old(db=db)
 
+    logger.info("Hours old: {}", hours_old)
     logger.info("Searching for jobs...")
 
-    tasks = [asyncio.to_thread(search_jobs, role) for role in ALL_ROLES]
+    tasks = [asyncio.to_thread(search_jobs, role, hours_old) for role in ALL_ROLES]
 
     results = await asyncio.gather(*tasks)
     final_df = pd.concat(results)
