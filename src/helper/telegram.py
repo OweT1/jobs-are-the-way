@@ -4,7 +4,7 @@ from loguru import logger
 
 # Local Project
 from src.core.config import settings
-from src.utils import create_retry_decorator
+from src.helper.retry import create_retry_decorator
 
 
 # --- Telegram Bot Class --- #

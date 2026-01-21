@@ -4,7 +4,7 @@ from openai import AsyncOpenAI
 
 # Local Project
 from src.core.config import settings
-from src.utils import create_retry_decorator
+from src.helper.retry import create_retry_decorator
 
 
 # --- LLM Functions --- #
