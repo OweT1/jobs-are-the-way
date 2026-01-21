@@ -58,7 +58,11 @@ def _get_latest_timestamp(db: PostgresDB) -> datetime.datetime:
 
 def get_hours_old(db: PostgresDB) -> int:
     latest_timestamp = _get_latest_timestamp(db)
-    time_diff: datetime.timedelta = datetime.datetime.now(datetime.timezone.utc) - latest_timestamp
+    time_diff: datetime.timedelta = (
+        datetime.datetime.now(datetime.timezone.utc)
+        - latest_timestamp
+        - datetime.timedelta(minutes=10)
+    )  # add buffer for workflow runtime, which is around 10 minutes
     hours_old: int = (
         int(time_diff.total_seconds() // 3600) + 1
     )  # add 1 to hours_old - since we take floor of the time difference
