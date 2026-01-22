@@ -9,7 +9,7 @@ from sqlalchemy import exists, func, select
 from sqlalchemy.dialects.postgresql import insert
 
 # Local Project
-from src.constants import HOURS_OLD_FALLBACK
+from src.constants import HOURS_OLD_FALLBACK, HOURS_OLD_MAX
 from src.db.models import JobResults
 from src.db.pg import PostgresDB
 from src.helper.retry import create_retry_decorator
@@ -79,4 +79,4 @@ def get_hours_old(db: PostgresDB) -> int:
     if hours_old <= 0:
         logger.warning("'hours_old' is less than or equal to 0.")
         return HOURS_OLD_FALLBACK
-    return hours_old
+    return min(hours_old, HOURS_OLD_MAX)
