@@ -11,6 +11,9 @@ virtual-environment: setup
 dev: setup
 	uv sync --extra dev
 
+requirements.txt:
+	uv pip compile pyproject.toml -o requirements.txt
+
 db:
 	docker run --name $(POSTGRES_DB) \
 	-p 5432:5432 \
