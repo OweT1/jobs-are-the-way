@@ -35,16 +35,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6 # Action to check out repository code
 
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version-file: ".python-version"
+      - name: Build Docker image
+        run: docker build -t find_jobs .
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
-        with:
-          enable-cache: true # Uses GitHub's cache for uv dependencies automatically
-          version: "latest"
-
-      - name: Run Database Migrations and Script
-        run: uv run sh -c "alembic upgrade head; python -m src.main" # 'uv run' automatically handles environment syncing and running the module
+      - name: Run Docker image
+        run: docker run find_jobs
