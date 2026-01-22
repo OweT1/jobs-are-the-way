@@ -35,8 +35,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v6 # Action to check out repository code
 
-      - name: Build Docker image
-        run: docker build -t find_jobs .
-
-      - name: Run Docker image
-        run: docker run find_jobs
+      - name: Build & Run Docker image
+        run: |
+          docker build -t find_jobs . |
+          docker run find_jobs
