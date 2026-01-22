@@ -93,3 +93,4 @@ REQUIRED_FIELDS = frozenset(["company", "title", "job_url"])
 NON_RELEVANT_CHANNEL_CATEGORIES = frozenset(["NOT_RELEVANT", "SENIOR_TECH"])
 
 HOURS_OLD_FALLBACK: int = 3
+HOURS_OLD_MAX: int = 12
