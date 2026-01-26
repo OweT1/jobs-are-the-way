@@ -26,7 +26,7 @@ from src.utils import (
 )
 
 # --- Constants --- #
-LLM_MODEL: str = OpenRouterFreeModels.XIAOMI.value
+LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
 MAX_API_CALLS_PER_MINUTE = 16
 
 

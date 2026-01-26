@@ -3,6 +3,6 @@ from enum import Enum
 
 
 class OpenRouterFreeModels(Enum):
-    XIAOMI = "xiaomi/mimo-v2-flash:free"
+    DEEPSEEK = "deepseek/deepseek-r1-0528:free"
     OPENAI = "openai/gpt-oss-20b:free"
     GEMINI = "google/gemini-2.0-flash-exp:free"
