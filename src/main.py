@@ -1,6 +1,6 @@
 # Standard Library Packages
 import asyncio
-import time  # noqa
+import time
 
 # Third Party Packages
 import pandas as pd
@@ -27,7 +27,8 @@ from src.utils import (
 
 # --- Constants --- #
 LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
-MAX_API_CALLS_PER_MINUTE = 16
+MAX_API_CALLS_PER_MINUTE = 8
+MIN_INTERVAL = 60 / MAX_API_CALLS_PER_MINUTE
 
 
 # --- Main function --- #
@@ -42,8 +43,8 @@ async def main():
 
     tasks = [asyncio.to_thread(search_jobs, role, hours_old) for role in ALL_ROLES]
 
-    results = await asyncio.gather(*tasks)
-    final_df = pd.concat(results)
+    job_results = await asyncio.gather(*tasks)
+    final_df = pd.concat(job_results)
     final_df = preprocess_df(final_df)
 
     # De-duplicate dataframe rows against DB
@@ -55,32 +56,19 @@ async def main():
     if len(final_df) == 0:
         return
 
-    tasks = [
-        client.get_chat_completion(
+    llm_results = []
+    for _, row in final_df.iterrows():
+        start_time = time.time()
+        res = await client.get_chat_completion(
             prompt=get_category_prompt(job_details=format_job_description(row)),
             model=LLM_MODEL,
             reasoning_enabled=True,
         )
-        for _, row in final_df.iterrows()
-    ]
-    # if (
-    #     LLM_MODEL != OpenRouterFreeModels.XIAOMI.value
-    # ):  # need to do rate limiting - max 16 api calls per minute
-    #     results = []
-    #     for i in range(0, len(tasks), MAX_API_CALLS_PER_MINUTE):
-    #         start_time = time.time()
-    #         tmp_tasks = tasks[i : i + MAX_API_CALLS_PER_MINUTE]
-    #         tmp_results = await asyncio.gather(*tmp_tasks)
-    #         results.append(tmp_results)
-    #         time_taken = time.time() - start_time
-    #         sleep_time = 60 - time_taken if time_taken < 60 else 0
-    #         await asyncio.sleep(sleep_time)
 
-    # else:  # Other models no need to rate limit
-    #     results = await asyncio.gather(*tasks)
-
-    results = await asyncio.gather(*tasks)
-    final_df["job_category"] = results
+        llm_results.append(res)
+        time_taken = time.time() - start_time
+        await asyncio.sleep(max(0, MIN_INTERVAL - time_taken))
+    final_df["job_category"] = llm_results
 
     # Clean & Process Dataframe
     final_df = process_df(final_df)
