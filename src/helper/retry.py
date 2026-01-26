@@ -1,4 +1,5 @@
 # Third Party Packages
+import telegram
 from loguru import logger
 from tenacity import (
     RetryCallState,
@@ -35,3 +36,19 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10, exceptio
             reraise=True,  # Reraise the final exception after all attempts fail
             before_sleep=_retry_state_before_sleep,
         )
+
+
+# --- Retry Decorators --- #
+db_retry_decorator = create_retry_decorator()
+job_search_retry_decorator = create_retry_decorator()
+telegram_retry_decorator = create_retry_decorator(
+    max_attempts=7,
+    initial_wait=15,
+    max_wait=45,
+    exceptions=(
+        telegram.error.NetworkError,
+        telegram.error.RetryAfter,
+        telegram.error.TimedOut,
+    ),
+)
+llm_retry_decorator = create_retry_decorator()

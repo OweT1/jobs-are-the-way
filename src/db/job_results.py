@@ -12,10 +12,7 @@ from sqlalchemy.dialects.postgresql import insert
 from src.constants import HOURS_OLD_FALLBACK, HOURS_OLD_MAX
 from src.db.models import JobResults
 from src.db.pg import PostgresDB
-from src.helper.retry import create_retry_decorator
-
-# --- Retry Decorator --- #
-retry_decorator = create_retry_decorator()
+from src.helper.retry import db_retry_decorator
 
 
 # --- DB Functions --- #
@@ -25,7 +22,7 @@ def _get_table_columns() -> list[str]:
     return col_names
 
 
-@retry_decorator
+@db_retry_decorator
 def add_jobs(db: PostgresDB, jobs_df: pd.DataFrame):
     jobs_list = jobs_df.to_dict(orient="records")
 
@@ -37,7 +34,7 @@ def add_jobs(db: PostgresDB, jobs_df: pd.DataFrame):
     logger.info("df of {} rows has successfully been added to the JobResults table", len(jobs_list))
 
 
-@retry_decorator
+@db_retry_decorator
 def _check_job_existence_by_id(db: PostgresDB, job_id: str) -> bool:
     with db.session() as session:
         stmt = select(exists().where(JobResults.job_id == job_id))
@@ -56,7 +53,7 @@ async def check_jobs_existence(db: PostgresDB, jobs_df: pd.DataFrame) -> pd.Data
     return jobs_df
 
 
-@retry_decorator
+@db_retry_decorator
 def _get_latest_timestamp(db: PostgresDB) -> datetime.datetime:
     with db.session() as session:
         stmt = select(func.max(JobResults.updated_at))
