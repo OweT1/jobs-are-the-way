@@ -4,7 +4,7 @@ from openai import AsyncOpenAI
 
 # Local Project
 from src.core.config import settings
-from src.helper.retry import create_retry_decorator
+from src.helper.retry import llm_retry_decorator
 
 
 # --- LLM Functions --- #
@@ -18,39 +18,26 @@ class OpenRouterLLMClient:
         self.base_url = base_url
         self.client = AsyncOpenAI(base_url=base_url, api_key=api_key)
 
+    @llm_retry_decorator
     async def get_chat_completion(
         self, prompt: str, model: str, reasoning_enabled: bool = True, **kwargs
     ):
-        retry_decorator = create_retry_decorator()
+        logger.info("Calling LLM with prompt {}", prompt)
 
-        @retry_decorator
-        async def _get_chat_completion(
-            client: AsyncOpenAI, prompt: str, model: str, reasoning_enabled: bool, **kwargs
-        ):
-            logger.info("Calling LLM with prompt {}", prompt)
+        # Create the chat.completions.create kwargs
+        completions_kwargs = {
+            "model": model,
+            "messages": [{"role": "user", "content": prompt}],
+        }
+        completions_kwargs.update(kwargs)
 
-            # Create the chat.completions.create kwargs
-            completions_kwargs = {
-                "model": model,
-                "messages": [{"role": "user", "content": prompt}],
-            }
-            completions_kwargs.update(kwargs)
+        # Add reasoning if enabled
+        if reasoning_enabled:
+            completions_kwargs["extra_body"] = {"reasoning": {"enabled": True}}
 
-            # Add reasoning if enabled
-            if reasoning_enabled:
-                completions_kwargs["extra_body"] = {"reasoning": {"enabled": True}}
+        response = await self.client.chat.completions.create(**completions_kwargs)
+        logger.info("Response generated: {}", response)
 
-            response = await client.chat.completions.create(**completions_kwargs)
-            logger.info("Response generated: {}", response)
-
-            # Extract the assistant message with reasoning_details
-            response = response.choices[0].message
-            return response.content
-
-        return await _get_chat_completion(
-            client=self.client,
-            prompt=prompt,
-            model=model,
-            reasoning_enabled=reasoning_enabled,
-            **kwargs,
-        )
+        # Extract the assistant message with reasoning_details
+        response = response.choices[0].message
+        return response.content
