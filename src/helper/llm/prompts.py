@@ -42,7 +42,7 @@ def get_category_prompt(job_details: str) -> str:
 
     <output_instructions>
     You must output ONLY ONE value from <job_categories>.
-    Do NOT include explanations, reasoning, punctuation, or additional text.
+    You must NOT include explanations, reasoning, punctuation, or additional text, as the output will be used directly as the `job_category`.
     </output_instructions>
 
     <job_descriptions>
