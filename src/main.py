@@ -12,8 +12,8 @@ from src.core.config import settings
 from src.db.job_results import add_jobs, check_jobs_existence, get_hours_old
 from src.db.pg import PostgresDB
 from src.helper.job_search import search_jobs
-from src.helper.llm.constants import HuggingFaceFreeModels, OpenRouterFreeModels  # noqa
-from src.helper.llm.llm_client import HuggingFaceLLMClient, OpenRouterLLMClient  # noqa
+from src.helper.llm.client.openrouter import OpenRouterLLMClient
+from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (

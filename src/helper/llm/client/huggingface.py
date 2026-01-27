@@ -1,0 +1,12 @@
+# Local Project
+from src.core.config import settings
+from src.helper.llm.client.base import LLMClient
+
+
+class HuggingFaceLLMClient(LLMClient):
+    def __init__(
+        self,
+        api_key: str = settings.hf_api_key,
+        base_url: str = settings.hf_base_url,
+    ):
+        super().__init__(api_key, base_url)
