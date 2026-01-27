@@ -27,7 +27,7 @@ from src.utils import (
 
 # --- Constants --- #
 LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
-MAX_API_CALLS_PER_MINUTE = 8
+MAX_API_CALLS_PER_MINUTE = 16
 MIN_INTERVAL = 60 / MAX_API_CALLS_PER_MINUTE
 
 
