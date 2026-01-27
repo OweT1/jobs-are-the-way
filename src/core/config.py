@@ -33,6 +33,9 @@ class Settings(BaseSettings):
     openrouter_api_key: str
     openrouter_base_url: str
 
+    hf_api_key: str
+    hf_base_url: str
+
     # JobSpy
     default_location: str = DEFAULT_LOCATION
 
