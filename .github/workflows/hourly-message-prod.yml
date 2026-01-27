@@ -1,9 +1,9 @@
 name: Hourly Message job - PROD
 
 on:
-  # schedule:
-  #   # Runs the workflow every hour
-  #   - cron: "36 * * * *"
+  schedule:
+    # Runs the workflow every hour
+    - cron: "36 * * * *"
   workflow_dispatch: # Allows to run the script manually for testing
 
 jobs:
