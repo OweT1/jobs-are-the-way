@@ -12,8 +12,8 @@ from src.core.config import settings
 from src.db.job_results import add_jobs, check_jobs_existence, get_hours_old
 from src.db.pg import PostgresDB
 from src.helper.job_search import search_jobs
-from src.helper.llm.constants import OpenRouterFreeModels
-from src.helper.llm.llm_client import OpenRouterLLMClient
+from src.helper.llm.constants import HuggingFaceFreeModels
+from src.helper.llm.llm_client import HuggingFaceLLMClient
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (
@@ -26,7 +26,7 @@ from src.utils import (
 )
 
 # --- Constants --- #
-LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
+LLM_MODEL: str = HuggingFaceFreeModels.DEEPSEEK.value
 MAX_API_CALLS_PER_MINUTE = 8
 MIN_INTERVAL = 60 / MAX_API_CALLS_PER_MINUTE
 
@@ -34,7 +34,7 @@ MIN_INTERVAL = 60 / MAX_API_CALLS_PER_MINUTE
 # --- Main function --- #
 async def main():
     tele_bot = TeleBot()
-    client = OpenRouterLLMClient()
+    client = HuggingFaceLLMClient()
     db = PostgresDB()
     hours_old: int = get_hours_old(db=db)
 
