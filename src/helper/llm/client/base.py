@@ -36,6 +36,14 @@ class LLMClient:
         response = await self.client.chat.completions.create(**completions_kwargs)
         logger.info("Response generated: {}", response)
 
-        # Extract the assistant message with reasoning_details
-        response = response.choices[0].message
+        # Extract the message, checking for any network errors on the API
+        choice = response.choices[0]
+        if hasattr(choice, "error"):
+            logger.info("LLM Error detected")
+            error = choice.error
+            error_msg = error["message"]
+            error_code = error["code"]
+            raise Exception(f"Error code: {error_code}, Error Message: {error_msg}")
+
+        response = choice.message
         return response.content

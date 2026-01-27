@@ -51,4 +51,8 @@ telegram_retry_decorator = create_retry_decorator(
         telegram.error.TimedOut,
     ),
 )
-llm_retry_decorator = create_retry_decorator()
+llm_retry_decorator = create_retry_decorator(
+    max_attempts=5,
+    initial_wait=3,
+    max_wait=15,
+)
