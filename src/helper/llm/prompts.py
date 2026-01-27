@@ -29,7 +29,10 @@ def get_category_prompt(job_details: str) -> str:
     <special_instructions>
     You MUST categorise the job as 'SENIOR_TECH' if all of the conditions are met:
     - The role matches any of the technology roles.
-    - The role is of a senior/lead/principal/expert/managerial/president or similar position, or requires minimally 2 years of working experience.
+    - The role is of a senior/lead/principal/expert/managerial/president or similar position, or requires at least 3 years of working experience.
+    - Examples:
+        - A Data Scientist job requires 2-5 years of experience. It should be categorised as 'DATA_SCIENTIST' since it does not require at least 3 years of working experience.
+        - A Senior Data Scientist job requires 4-6 years of experience. It should be categorised as 'SENIOR_TECH' since it requires at least 3 years of working experience.
 
     You MUST categorise the job as 'NOT_RELEVANT' if any of the conditions are met:
     - The role matches any of the technology roles, BUT it requires candidates to have mandatory working proficiency in languages other than English or Chinese/Mandarin.
@@ -37,7 +40,14 @@ def get_category_prompt(job_details: str) -> str:
         - If the job requires only English and/or Chinese/Mandarin, it should not be categorised as 'NOT_RELEVANT'.
         - If the job lists languages outside of English and Chinese/Mandarin as good-to-have, it should not be categorised as 'NOT_RELEVANT'.
         - If the job requires a secondary language and all required languages are within English and/or Chinese/Mandarin, then it should not be categorised as 'NOT_RELEVANT'.
-    - The role does not clearly match any technology role in the Job Categories.
+    - The role does not clearly match any technology-related role in the Job Categories.
+        - If some parts of the job matches any of the technology roles and their provided description, you must choose the MOST SPECIFIC and BEST-MATCHING category.
+    - Examples:
+        - A Data Scientist job requires working proficiency in English, Chinese and Thai. It should be categorised as 'NOT_RELEVANT', since it requires working proficiency in languages other than English and Chinese/Mandarin.
+        - A Data Scientist job requires working proficiency in English, Chinese/Thai. It should be categorised as 'DATA_SCIENTIST', since the secondary language can be either Chinese or Thai, so all required languages are within English and Chinese/Mandarin.
+        - A Marketing Associate job. It should be categorised as 'NOT_RELEVANT', since it does not clearly match any technology-related role in the Job Categories.
+
+    Additionally, you should be LENIENT when categorising a job as 'NOT_RELEVANT' and should only do so when the job is COMPLETELY IRRELEVANT to technology, or requires a completely different language skillset.
     </special_instructions>
 
     <output_instructions>
