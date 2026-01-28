@@ -14,13 +14,16 @@ class TeleBot:
 
     @telegram_retry_decorator
     async def send_message(self, text: str, chat_id: int, thread_id: int = None):
-        bot = telegram.Bot(self.bot_token)
-        async with bot:
-            await bot.send_message(
-                text=text,
-                chat_id=chat_id,
-                message_thread_id=thread_id,
-                parse_mode=telegram.constants.ParseMode.HTML,
-                disable_notification=True,
-            )
-        logger.info("Bot has sent message '{}' to chat {}", text, chat_id)
+        async def _send_message(bot_token: str):
+            bot = telegram.Bot(bot_token)
+            async with bot:
+                await bot.send_message(
+                    text=text,
+                    chat_id=chat_id,
+                    message_thread_id=thread_id,
+                    parse_mode=telegram.constants.ParseMode.HTML,
+                    disable_notification=True,
+                )
+            logger.info("Bot has sent message '{}' to chat {}", text, chat_id)
+
+        await _send_message(self.bot_token)
