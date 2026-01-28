@@ -26,7 +26,7 @@ from src.utils import (
 )
 
 # --- Constants --- #
-LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
+LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK_R1T2.value
 MAX_API_CALLS_PER_MINUTE = 16
 BATCH_SIZE = 3
 MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
