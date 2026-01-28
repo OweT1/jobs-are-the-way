@@ -3,6 +3,7 @@ from loguru import logger
 from openai import AsyncOpenAI
 
 # Local Project
+from src.constants import JOB_CATEGORIES
 from src.helper.retry import llm_retry_decorator
 
 
@@ -40,16 +41,16 @@ class LLMClient:
             # Extract the message, checking for any network errors on the API
             choice = response.choices[0]
             if hasattr(choice, "error"):
-                logger.info("LLM Error detected")
+                logger.info("LLM Error detected.")
                 error = choice.error
                 error_msg = error["message"]
                 error_code = error["code"]
                 raise Exception(f"Error code: {error_code}, Error Message: {error_msg}")
 
-            response_content = choice.message.content
-            if response_content == "":
-                logger.info("LLM Empty Output detected")
-                raise ValueError("LLM Response content should not be empty.")
+            response_content = choice.message.content.strip()
+            if response_content not in JOB_CATEGORIES:
+                logger.info("LLM Wrong Output detected.")
+                raise ValueError(f"LLM Response content should be in {JOB_CATEGORIES}.")
             return response_content
 
         return await _get_chat_completion()
