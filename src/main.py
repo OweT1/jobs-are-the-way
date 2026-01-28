@@ -28,7 +28,9 @@ from src.utils import (
 # --- Constants --- #
 LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK.value
 MAX_API_CALLS_PER_MINUTE = 16
-MIN_INTERVAL = 60 / MAX_API_CALLS_PER_MINUTE
+BATCH_SIZE = 3
+MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
+MIN_INTERVAL = 60 / MAX_BATCH_CALLS_PER_MINUTE
 
 
 # --- Main function --- #
@@ -57,17 +59,23 @@ async def main():
         return
 
     llm_results = []
-    for _, row in final_df.iterrows():
+    for i in range(0, len(final_df), BATCH_SIZE):
         start_time = time.time()
-        res = await client.get_chat_completion(
-            prompt=get_category_prompt(job_details=format_job_description(row)),
-            model=LLM_MODEL,
-            reasoning_enabled=True,
-        )
+        temp_df = final_df.iloc[i : i + BATCH_SIZE]
+        tasks = [
+            client.get_chat_completion(
+                prompt=get_category_prompt(job_details=format_job_description(row)),
+                model=LLM_MODEL,
+                reasoning_enabled=True,
+            )
+            for _, row in temp_df.iterrows()
+        ]
+        res = await asyncio.gather(*tasks)
+        llm_results.extend(res)
 
-        llm_results.append(res)
         time_taken = time.time() - start_time
         await asyncio.sleep(max(0, MIN_INTERVAL - time_taken))
+
     final_df["job_category"] = llm_results
 
     # Clean & Process Dataframe
