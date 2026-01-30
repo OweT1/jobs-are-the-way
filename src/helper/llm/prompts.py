@@ -27,12 +27,13 @@ def get_category_prompt(job_details: str) -> str:
     </instructions>
 
     <special_instructions>
-    You MUST categorise the job as 'SENIOR_TECH' if all of the conditions are met:
-    - The role matches any of the technology roles.
-    - The role is of a senior/lead/principal/expert/managerial/president or similar position, or requires at least 3 years of working experience.
+    You MUST categorise the job as 'SENIOR_TECH' if any of the conditions are met:
+    - The role matches any of the technology roles BUT the role is of a senior/lead/principal/expert/managerial/president or similar position, or requires at least 3 years of working experience.
+    - The role matches any of the technology roles BUT the role requires minimally a Master's or a PhD (Doctor of Philosophy) Degree.
     - Examples:
         - A Data Scientist job requires 2-5 years of experience. It should be categorised as 'DATA_SCIENTIST' since it does not require at least 3 years of working experience.
         - A Senior Data Scientist job requires 4-6 years of experience. It should be categorised as 'SENIOR_TECH' since it requires at least 3 years of working experience.
+        - A Research Scientist job does not require any years of experiences, but requires minimally a Master's Degree. It should be categorised as 'SENIOR_TECH' as it requires minimally a Master's Degree.
 
     You MUST categorise the job as 'NOT_RELEVANT' if any of the conditions are met:
     - The role matches any of the technology roles, BUT it requires candidates to have mandatory working proficiency in languages other than English or Chinese/Mandarin.
