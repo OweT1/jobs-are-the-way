@@ -5,11 +5,11 @@ import datetime
 # Third Party Packages
 import pandas as pd
 from loguru import logger
-from sqlalchemy import exists, func, select
+from sqlalchemy import delete, exists, func, select, text
 from sqlalchemy.dialects.postgresql import insert
 
 # Local Project
-from src.constants import HOURS_OLD_FALLBACK, HOURS_OLD_MAX
+from src.constants import DB_CLEAN_UP_DAYS_THRESHOLD, HOURS_OLD_FALLBACK, HOURS_OLD_MAX
 from src.db.models import JobResults
 from src.db.pg import PostgresDB
 from src.helper.retry import db_retry_decorator
@@ -77,3 +77,15 @@ def get_hours_old(db: PostgresDB) -> int:
         logger.warning("'hours_old' is less than or equal to 0.")
         return HOURS_OLD_FALLBACK
     return min(hours_old, HOURS_OLD_MAX)
+
+
+@db_retry_decorator
+def delete_old_transactions(db: PostgresDB):
+    with db.session() as session:
+        stmt = delete(JobResults).where(
+            JobResults.updated_at
+            < func.now() - text(f"INTERVAL '{DB_CLEAN_UP_DAYS_THRESHOLD} days'")
+        )
+        result = session.execute(stmt)
+        logger.info("Deleted {} number of rows", result.rowcount)
+        session.commit()
