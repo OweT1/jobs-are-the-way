@@ -49,13 +49,19 @@ async def main():
     final_df = pd.concat(job_results)
     final_df = preprocess_df(final_df)
 
-    # De-duplicate dataframe rows against DB
-    logger.info("Before deduplicating against DB: {} rows", len(final_df))
-    final_df = await check_jobs_existence(db, final_df)
-    logger.info("After deduplicating against DB: {} rows", len(final_df))
-
-    # Exit if no jobs were found
+    # Exit if no jobs were found initially
     if len(final_df) == 0:
+        logger.info("Check 1: No jobs were found in the intial stage. Exiting...")
+        return
+
+    # De-duplicate dataframe rows against DB
+    logger.info("Before de-duplicating against DB: {} rows", len(final_df))
+    final_df = await check_jobs_existence(db, final_df)
+    logger.info("After de-duplicating against DB: {} rows", len(final_df))
+
+    # Exit if no jobs were found after de-duplication
+    if len(final_df) == 0:
+        logger.info("Check 2: No jobs were found after de-duplicating against DB. Exiting...")
         return
 
     llm_results = []
@@ -95,6 +101,7 @@ async def main():
     # Add the current dataframe rows to the database
     logger.info("Adding {} rows to 'job_results' table", len(final_df))
     add_jobs(db, final_df)
+    logger.info("Successfully added {} rows to 'job_results' table", len(final_df))
 
 
 if __name__ == "__main__":
