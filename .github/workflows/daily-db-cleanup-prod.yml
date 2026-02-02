@@ -1,0 +1,57 @@
+name: Daily DB Clean-up - PROD
+
+on:
+  schedule:
+    # Runs the workflow daily at 3am
+    - cron: "00 3 * * *"
+  workflow_dispatch: # Allows to run the script manually for testing
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest # Specifies the runner environment
+    environment: production
+
+    env:
+      ENVRIONMENT_NAME: ${{ vars.ENVIRONMENT_NAME }}
+      OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+      OPENROUTER_BASE_URL: ${{ vars.OPENROUTER_BASE_URL }}
+      HF_API_KEY: ${{ secrets.HF_API_KEY }}
+      HF_BASE_URL: ${{ vars.HF_BASE_URL }}
+      DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
+      TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
+      TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
+      AIML_ENGINEER_THREAD_ID: ${{ vars.AIML_ENGINEER_THREAD_ID }}
+      DATA_ENGINEER_THREAD_ID: ${{ vars.DATA_ENGINEER_THREAD_ID}}
+      DATA_SCIENTIST_THREAD_ID: ${{ vars.DATA_SCIENTIST_THREAD_ID }}
+      DATA_ANALYST_THREAD_ID: ${{ vars.DATA_ANALYST_THREAD_ID }}
+      SOFTWARE_ENGINEER_THREAD_ID: ${{ vars.SOFTWARE_ENGINEER_THREAD_ID}}
+      OTHERS_THREAD_ID: ${{ vars.OTHERS_THREAD_ID }}
+      AIML_ENGINEER_INTERN_THREAD_ID: ${{ vars.AIML_ENGINEER_INTERN_THREAD_ID }}
+      DATA_ENGINEER_INTERN_THREAD_ID: ${{ vars.DATA_ENGINEER_INTERN_THREAD_ID}}
+      DATA_SCIENTIST_INTERN_THREAD_ID: ${{ vars.DATA_SCIENTIST_INTERN_THREAD_ID }}
+      DATA_ANALYST_INTERN_THREAD_ID: ${{ vars.DATA_ANALYST_INTERN_THREAD_ID }}
+      SOFTWARE_ENGINEER_INTERN_THREAD_ID: ${{ vars.SOFTWARE_ENGINEER_INTERN_THREAD_ID}}
+      OTHERS_INTERN_THREAD_ID: ${{ vars.OTHERS_INTERN_THREAD_ID }}
+      SENIOR_TECH_THREAD_ID: ${{ vars.SENIOR_TECH_THREAD_ID }}
+      NOT_RELEVANT_THREAD_ID: ${{ vars.NOT_RELEVANT_THREAD_ID }}
+      POSTGRES_DB_URL: ${{ secrets.POSTGRES_DB_URL }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6 # Action to check out repository code
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version-file: ".python-version"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true # Uses GitHub's cache for uv dependencies automatically
+          version: "latest"
+
+      - name: Run DB Clean-up script
+        run: uv run python -m scripts.clean_db # 'uv run' automatically handles environment syncing and running the module
