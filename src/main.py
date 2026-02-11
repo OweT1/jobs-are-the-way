@@ -12,7 +12,7 @@ from src.core.config import settings
 from src.db.job_results import add_jobs, check_jobs_existence, get_hours_old
 from src.db.pg import PostgresDB
 from src.helper.job_search import search_jobs
-from src.helper.llm.client.openrouter import OpenRouterLLMClient
+from src.helper.llm.client import LLMClient, OpenRouterLLMClient
 from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
@@ -28,9 +28,31 @@ from src.utils import (
 # --- Constants --- #
 LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK_R1T2.value
 MAX_API_CALLS_PER_MINUTE = 16
-BATCH_SIZE = 3
+BATCH_SIZE = 4
 MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
 MIN_INTERVAL = 60 / MAX_BATCH_CALLS_PER_MINUTE
+
+
+# --- Helper functions --- #
+async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame) -> list[str]:
+    llm_results = []
+    for i in range(0, len(df), BATCH_SIZE):
+        start_time = time.time()
+        temp_df = df.iloc[i : i + BATCH_SIZE]
+        tasks = [
+            client.get_chat_completion(
+                prompt=get_category_prompt(job_details=format_job_description(row)),
+                model=LLM_MODEL,
+                reasoning_enabled=True,
+            )
+            for _, row in temp_df.iterrows()
+        ]
+        res = await asyncio.gather(*tasks)
+        llm_results.extend(res)
+
+        time_taken = time.time() - start_time
+        await asyncio.sleep(max(0, MIN_INTERVAL - time_taken))
+    return llm_results
 
 
 # --- Main function --- #
@@ -64,44 +86,27 @@ async def main():
         logger.info("Check 2: No jobs were found after de-duplicating against DB. Exiting...")
         return
 
-    llm_results = []
-    for i in range(0, len(final_df), BATCH_SIZE):
-        start_time = time.time()
-        temp_df = final_df.iloc[i : i + BATCH_SIZE]
-        tasks = [
-            client.get_chat_completion(
-                prompt=get_category_prompt(job_details=format_job_description(row)),
-                model=LLM_MODEL,
-                reasoning_enabled=True,
-            )
-            for _, row in temp_df.iterrows()
-        ]
-        res = await asyncio.gather(*tasks)
-        llm_results.extend(res)
+    for company in get_unique_objs(final_df["company"]):
+        company_df = final_df[final_df["company"] == company]
+        llm_results = await get_llm_batch_calls(client, company_df)
+        company_df["job_category"] = llm_results
 
-        time_taken = time.time() - start_time
-        await asyncio.sleep(max(0, MIN_INTERVAL - time_taken))
+        # Clean & Process DataFrame
+        company_df = process_df(company_df)
+        logger.info("df for company {}:", company)
+        logger.info(company_df)
 
-    final_df["job_category"] = llm_results
+        for job_category in get_unique_objs(company_df["job_category"]):
+            job_df = company_df[company_df["job_category"] == job_category]
+            thread_id = get_job_thread_id(job_category)
+            logger.info("Sending message to {} channel", job_category)
 
-    # Clean & Process Dataframe
-    final_df = process_df(final_df)
-    logger.info("Final df:")
-    logger.info(final_df)
-
-    for job_category in get_unique_objs(final_df["job_category"]):
-        job_df = final_df[final_df["job_category"] == job_category]
-        thread_id = get_job_thread_id(job_category)
-        logger.info("Sending message to {} channel", job_category)
-        for company in get_unique_objs(job_df["company"]):
-            company_df = job_df[job_df["company"] == company]
-            mes = format_company_message(company_df=company_df, company=company)
+            mes = format_company_message(company_df=job_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-    # Add the current dataframe rows to the database
-    logger.info("Adding {} rows to 'job_results' table", len(final_df))
-    add_jobs(db, final_df)
-    logger.info("Successfully added {} rows to 'job_results' table", len(final_df))
+        logger.info("Adding {} rows to 'job_results' table", len(company_df))
+        add_jobs(db, company_df)
+        logger.info("Successfully added {} rows to 'job_results' table", len(company_df))
 
 
 if __name__ == "__main__":
