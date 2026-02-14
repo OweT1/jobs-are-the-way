@@ -26,7 +26,8 @@ from src.utils import (
 )
 
 # --- Constants --- #
-LLM_MODEL: str = OpenRouterFreeModels.DEEPSEEK_R1T2.value
+LLM_MODEL: str = OpenRouterFreeModels.NVIDIA.value
+FALLBACK_MODEL: str = OpenRouterFreeModels.AVAILABLE.value
 MAX_API_CALLS_PER_MINUTE = 16
 BATCH_SIZE = 4
 MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
@@ -34,7 +35,7 @@ MIN_INTERVAL = 60 / MAX_BATCH_CALLS_PER_MINUTE
 
 
 # --- Helper functions --- #
-async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame) -> list[str]:
+async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame, model: str) -> list[str]:
     llm_results = []
     for i in range(0, len(df), BATCH_SIZE):
         start_time = time.time()
@@ -42,7 +43,7 @@ async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame) -> list[str]:
         tasks = [
             client.get_chat_completion(
                 prompt=get_category_prompt(job_details=format_job_description(row)),
-                model=LLM_MODEL,
+                model=model,
                 reasoning_enabled=True,
             )
             for _, row in temp_df.iterrows()
@@ -86,9 +87,19 @@ async def main():
         logger.info("Check 2: No jobs were found after de-duplicating against DB. Exiting...")
         return
 
+    save_df = pd.DataFrame()
     for company in get_unique_objs(final_df["company"]):
         company_df = final_df[final_df["company"] == company]
-        llm_results = await get_llm_batch_calls(client, company_df)
+        try:
+            llm_results = await get_llm_batch_calls(client, company_df, LLM_MODEL)
+        except Exception as e:
+            logger.warning(
+                "Current LLM model {} has errored out due to {}. Defaulting to openrouter available models...",
+                LLM_MODEL,
+                e,
+            )
+            llm_results = await get_llm_batch_calls(client, company_df, FALLBACK_MODEL)
+
         company_df["job_category"] = llm_results
 
         # Clean & Process DataFrame
@@ -104,9 +115,11 @@ async def main():
             mes = format_company_message(company_df=job_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-        logger.info("Adding {} rows to 'job_results' table", len(company_df))
-        add_jobs(db, company_df)
-        logger.info("Successfully added {} rows to 'job_results' table", len(company_df))
+        save_df = pd.concat([save_df, company_df], axis=1)
+
+    logger.info("Adding {} rows to 'job_results' table", len(save_df))
+    add_jobs(db, save_df)
+    logger.info("Successfully added {} rows to 'job_results' table", len(save_df))
 
 
 if __name__ == "__main__":
