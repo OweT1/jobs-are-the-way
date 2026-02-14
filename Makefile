@@ -26,7 +26,7 @@ run:
 	uv run sh -c "alembic upgrade head; python -m src.main"
 
 clean-db:
-  uv run python -m scripts.clean_db
+	uv run python -m scripts.clean_db
 
 quick-sync: dev
 	@echo "Sync finished"
