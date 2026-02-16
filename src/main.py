@@ -115,7 +115,7 @@ async def main():
             mes = format_company_message(company_df=job_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-        save_df = pd.concat([save_df, company_df], axis=1)
+        save_df = pd.concat([save_df, company_df], axis=0)
 
     logger.info("Adding {} rows to 'job_results' table", len(save_df))
     add_jobs(db, save_df)
