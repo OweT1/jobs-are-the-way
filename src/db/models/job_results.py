@@ -3,8 +3,9 @@ import datetime
 import uuid
 
 # Third Party Packages
-from sqlalchemy import Column, DateTime, Text
+from sqlalchemy import Column, DateTime, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import UUID  # noqa
+from sqlalchemy.orm import relationship
 
 # Local Project
 from src.db.models.base import Base
@@ -24,3 +25,7 @@ class JobResults(Base):
     job_category = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
     updated_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
+    workflow_id = Column(UUID(as_uuid=False), ForeignKey("workflow_runs.id"))
+
+    # Foreign relationship
+    workflow = relationship("WorkflowRuns", back_populates="job")

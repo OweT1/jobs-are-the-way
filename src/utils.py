@@ -7,7 +7,10 @@ from unstructured.cleaners.core import group_broken_paragraphs
 # Local Project
 from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
 from src.core.config import settings
-from src.db.job_results import _get_table_columns
+from src.db.repositories import JobResultsRepository
+
+# --- Constants --- #
+JOBRESULTS_REPO = JobResultsRepository()
 
 
 # --- Functions --- #
@@ -101,7 +104,7 @@ def preprocess_df(final_df: pd.DataFrame) -> pd.DataFrame:
     return final_df
 
 
-def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
+def postprocess_df(final_df: pd.DataFrame) -> pd.DataFrame:
     def _clean_df(df):
         return df.dropna(subset=list(REQUIRED_FIELDS))
 
@@ -152,7 +155,7 @@ def process_df(final_df: pd.DataFrame) -> pd.DataFrame:
 
     # DB processing
     def _filter_cols(df):
-        table_cols = _get_table_columns()
+        table_cols = JOBRESULTS_REPO._get_table_columns()
         df = df.filter(items=table_cols, axis=1)
         return df
 
