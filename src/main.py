@@ -1,6 +1,8 @@
 # Standard Library Packages
 import asyncio
 import time
+import uuid
+from datetime import datetime
 
 # Third Party Packages
 import pandas as pd
@@ -9,8 +11,9 @@ from loguru import logger
 # Local Project
 from src.constants import ALL_ROLES
 from src.core.config import settings
-from src.db.job_results import add_jobs, check_jobs_existence, get_hours_old
 from src.db.pg import PostgresDB
+from src.db.repositories import JobResultsRepository, WorkflowRunsRepository
+from src.db.utils import get_hours_old
 from src.helper.job_search import search_jobs
 from src.helper.llm.client import LLMClient, OpenRouterLLMClient
 from src.helper.llm.constants import OpenRouterFreeModels
@@ -21,8 +24,8 @@ from src.utils import (
     format_job_description,
     get_job_thread_id,
     get_unique_objs,
+    postprocess_df,
     preprocess_df,
-    process_df,
 )
 
 # --- Constants --- #
@@ -62,6 +65,14 @@ async def main():
     client = OpenRouterLLMClient()
     db = PostgresDB()
     hours_old: int = get_hours_old(db=db)
+    workflow_id = str(uuid.uuid4())
+    workflow_runtime = datetime.now()
+
+    jobs_repo = JobResultsRepository()
+    workflow_repo = WorkflowRunsRepository()
+
+    logger.info("Starting workflow...")
+    workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, False)
 
     logger.info("Hours old: {}", hours_old)
     logger.info("Searching for jobs...")
@@ -79,7 +90,7 @@ async def main():
 
     # De-duplicate dataframe rows against DB
     logger.info("Before de-duplicating against DB: {} rows", len(final_df))
-    final_df = await check_jobs_existence(db, final_df)
+    final_df = await jobs_repo.check_jobs_existence(db, final_df)
     logger.info("After de-duplicating against DB: {} rows", len(final_df))
 
     # Exit if no jobs were found after de-duplication
@@ -87,14 +98,16 @@ async def main():
         logger.info("Check 2: No jobs were found after de-duplicating against DB. Exiting...")
         return
 
-    save_df = pd.DataFrame()
+    final_df["workflow_id"] = workflow_id  # set workflow_id for job runs
+
     for company in get_unique_objs(final_df["company"]):
         company_df = final_df[final_df["company"] == company]
+        # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
         try:
             llm_results = await get_llm_batch_calls(client, company_df, LLM_MODEL)
         except Exception as e:
             logger.warning(
-                "Current LLM model {} has errored out due to {}. Defaulting to openrouter available models...",
+                "Current LLM model {} has errored out due to {}. Defaulting to OpenRouter available models...",
                 LLM_MODEL,
                 e,
             )
@@ -103,7 +116,7 @@ async def main():
         company_df["job_category"] = llm_results
 
         # Clean & Process DataFrame
-        company_df = process_df(company_df)
+        company_df = postprocess_df(company_df)
         logger.info("df for company {}:", company)
         logger.info(company_df)
 
@@ -115,11 +128,14 @@ async def main():
             mes = format_company_message(company_df=job_df, company=company)
             await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
-        save_df = pd.concat([save_df, company_df], axis=0)
+            # Save to DB
+            logger.info("Adding {} rows to 'job_results' table", len(job_df))
+            jobs_repo.add_jobs(db, job_df)
+            logger.info("Successfully added {} rows to 'job_results' table", len(job_df))
 
-    logger.info("Adding {} rows to 'job_results' table", len(save_df))
-    add_jobs(db, save_df)
-    logger.info("Successfully added {} rows to 'job_results' table", len(save_df))
+    logger.info("Workflow run succeeded. Updating workflow in 'workflow_runs' table.")
+    workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, True)
+    logger.info("Successfully added workflow_run")
 
 
 if __name__ == "__main__":
