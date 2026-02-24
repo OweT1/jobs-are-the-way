@@ -20,6 +20,7 @@ from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (
+    check_blacklist_company,
     format_company_message,
     format_job_description,
     get_job_thread_id,
@@ -65,6 +66,7 @@ async def main():
     client = OpenRouterLLMClient()
     db = PostgresDB()
     hours_old: int = get_hours_old(db=db)
+    hours_old = 3
     workflow_id = str(uuid.uuid4())
     workflow_runtime = datetime.now()
 
@@ -96,6 +98,16 @@ async def main():
     # Exit if no jobs were found after de-duplication
     if len(final_df) == 0:
         logger.info("Check 2: No jobs were found after de-duplicating against DB. Exiting...")
+        return
+
+    # Check for blacklisted companies
+    logger.info("Before checking for blacklisted companies: {} rows", len(final_df))
+    final_df = check_blacklist_company(final_df)
+    logger.info("After checking for blacklisted companies: {} rows", len(final_df))
+
+    # Exit if no jobs were found after removing the blacklisted companies
+    if len(final_df) == 0:
+        logger.info("Check 3: No jobs were found after removing blacklisted companies. Exiting...")
         return
 
     final_df["workflow_id"] = workflow_id  # set workflow_id for job runs
@@ -135,7 +147,7 @@ async def main():
 
     logger.info("Workflow run succeeded. Updating workflow in 'workflow_runs' table.")
     workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, True)
-    logger.info("Successfully added workflow_run")
+    logger.info("Successfully updated workflow_run")
 
 
 if __name__ == "__main__":
