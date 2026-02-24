@@ -3,7 +3,6 @@ AIML_ENGINEER_ROLES = [
     "Artificial Intelligence Engineer",
     "ML Engineer",
     "Machine Learning Engineer",
-    "MLE",
 ]
 DATA_ENGINEER_ROLES = ["Data Engineer"]
 DATA_SCIENTIST_ROLES = ["Data Scientist", "Data Science"]
