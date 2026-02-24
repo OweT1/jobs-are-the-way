@@ -5,7 +5,11 @@ from loguru import logger
 from unstructured.cleaners.core import group_broken_paragraphs
 
 # Local Project
-from src.constants import NON_RELEVANT_CHANNEL_CATEGORIES, REQUIRED_FIELDS
+from src.constants import (
+    BLACKLIST_COMPANIES,
+    NON_RELEVANT_CHANNEL_CATEGORIES,
+    REQUIRED_FIELDS,
+)
 from src.core.config import settings
 from src.db.repositories import JobResultsRepository
 
@@ -169,3 +173,10 @@ def postprocess_df(final_df: pd.DataFrame) -> pd.DataFrame:
     final_df = _filter_cols(final_df)
     final_df = _replace_nan(final_df)
     return final_df
+
+
+def check_blacklist_company(df: pd.DataFrame) -> pd.DataFrame:
+    is_blacklisted = df["company"].isin(BLACKLIST_COMPANIES)
+    boolean_filter = [not x for x in is_blacklisted]
+    df = df[boolean_filter]
+    return df

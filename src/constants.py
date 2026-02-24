@@ -95,3 +95,24 @@ HOURS_OLD_FALLBACK: int = 3
 HOURS_OLD_MAX: int = 12
 
 DB_CLEAN_UP_DAYS_THRESHOLD: int = 7
+
+BLACKLIST_COMPANIES = frozenset(
+    [
+        "PT Minyak Urapan Anggur",
+        "The Quantum Index",
+        "ECO-IMPACT Senegal",
+        "MINDSET INFORMATION TECHNOLOGY",
+        "Data Analyst Job",
+        "📊 Data 📑 & Analytics 📈 Leadership 👑 Jobs 👔",
+        "Jobs Wanted",
+        "XR-LEAN",
+        "Wise Solutions.Eco",
+        "Perspectiva surveys",
+        "NOUVELLETALENT.AI",
+        "Grupo Aw Oriental, C.A",
+        "MCO Consulting Brasil",
+        "BRAHMA AI",
+        "Global Business analyst",
+        "Catalyst Funds Management",
+    ]
+)
