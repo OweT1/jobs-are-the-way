@@ -36,6 +36,7 @@ MAX_API_CALLS_PER_MINUTE = 16
 BATCH_SIZE = 4
 MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
 MIN_INTERVAL = 60 / MAX_BATCH_CALLS_PER_MINUTE
+TELEGRAM_JOB_BATCH_PER_MSG = 5
 
 
 # --- Helper functions --- #
@@ -66,7 +67,6 @@ async def main():
     client = OpenRouterLLMClient()
     db = PostgresDB()
     hours_old: int = get_hours_old(db=db)
-    hours_old = 3
     workflow_id = str(uuid.uuid4())
     workflow_runtime = datetime.now()
 
@@ -133,12 +133,14 @@ async def main():
         logger.info(company_df)
 
         for job_category in get_unique_objs(company_df["job_category"]):
-            job_df = company_df[company_df["job_category"] == job_category]
             thread_id = get_job_thread_id(job_category)
             logger.info("Sending message to {} channel", job_category)
+            job_df = company_df[company_df["job_category"] == job_category]
 
-            mes = format_company_message(company_df=job_df, company=company)
-            await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+            for i in range(0, len(job_df), TELEGRAM_JOB_BATCH_PER_MSG):
+                temp_df = job_df.iloc[i : i + TELEGRAM_JOB_BATCH_PER_MSG]
+                mes = format_company_message(company_df=temp_df, company=company)
+                await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
             # Save to DB
             logger.info("Adding {} rows to 'job_results' table", len(job_df))
