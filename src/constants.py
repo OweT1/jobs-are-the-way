@@ -122,5 +122,9 @@ BLACKLIST_COMPANIES = frozenset(
         "Nova Rota RH",
         "Tips, Tricks and Hacks for Doing Everything Better",
         "Black Swan Holdings",
+        "Ningbo Deli Imp & Exp Co., Ltd.",
+        "Data Analyst",
+        "CXO Chapter",
+        "MSL EXPERT & MENTORING",
     ]
 )
