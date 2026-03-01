@@ -114,5 +114,13 @@ BLACKLIST_COMPANIES = frozenset(
         "BRAHMA AI",
         "Global Business analyst",
         "Catalyst Funds Management",
+        "Viral Set Go",
+        "Viral Internet Brands",
+        "Level Zero OT Cyber Security Conference",
+        "Khdma Dz",
+        "AR TECH DIARIES",
+        "Nova Rota RH",
+        "Tips, Tricks and Hacks for Doing Everything Better",
+        "Black Swan Holdings",
     ]
 )
