@@ -4,12 +4,8 @@ export
 setup:
 	pip install uv
 
-virtual-environment: setup
-	python -m venv .venv
-	uv sync
-
 dev: setup
-	uv sync --extra dev
+	uv sync --all-extras
 
 db:
 	docker run --name $(POSTGRES_DB) \
