@@ -366,6 +366,12 @@ wheels = [
 ]
 
 [[package]]
+name = "docopt"
+version = "0.6.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/a2/55/8f8cab2afd404cf578136ef2cc5dfb50baa1761b68c9da1fb1e4eed343c9/docopt-0.6.2.tar.gz", hash = "sha256:49b3a825280bd66b3aa83585ef59c4a8c82f2c8a522dbe754a8bc8d08c85c491", size = 25901, upload-time = "2014-06-16T11:18:57.406Z" }
+
+[[package]]
 name = "emoji"
 version = "2.15.0"
 source = { registry = "https://pypi.org/simple" }
@@ -665,6 +671,7 @@ dependencies = [
 dev = [
     { name = "ipykernel" },
     { name = "isort" },
+    { name = "py-make" },
     { name = "ruff" },
 ]
 
@@ -680,6 +687,7 @@ requires-dist = [
     { name = "pip", specifier = ">=25.3" },
     { name = "pre-commit", specifier = "==4.5.1" },
     { name = "psycopg2", specifier = ">=2.9.11" },
+    { name = "py-make", marker = "extra == 'dev'", specifier = ">=0.1.2" },
     { name = "pydantic-settings", specifier = ">=2.12.0" },
     { name = "python-dotenv", specifier = "==1.2.1" },
     { name = "python-jobspy", specifier = "==1.1.82" },
@@ -1152,6 +1160,18 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/cd/05/0a34433a064256a578f1783a10da6df098ceaa4a57bbeaa96a6c0352786b/pure_eval-0.2.3.tar.gz", hash = "sha256:5f4e983f40564c576c7c8635ae88db5956bb2229d7e9237d03b3c0b0190eaf42", size = 19752, upload-time = "2024-07-21T12:58:21.801Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/8e/37/efad0257dc6e593a18957422533ff0f87ede7c9c6ea010a2177d738fb82f/pure_eval-0.2.3-py3-none-any.whl", hash = "sha256:1db8e35b67b3d218d818ae653e27f06c3aa420901fa7b081ca98cbedc874e0d0", size = 11842, upload-time = "2024-07-21T12:58:20.04Z" },
+]
+
+[[package]]
+name = "py-make"
+version = "0.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "docopt" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/60/69/a18072af4fd4c6d77893843b6704e181342ae74a6aeff5a4b811068cd290/py-make-0.1.2.tar.gz", hash = "sha256:03f9cc7e946adbadaf27c08d03ed329192c680166b734e4a5688dc83abdf9521", size = 15232, upload-time = "2024-02-06T19:44:49.395Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ea/20/2f60d93edd6b5344e2887eff96704180fe063394180f3933c31ac3f26ac1/py_make-0.1.2-py3-none-any.whl", hash = "sha256:9b14c17b6b72904ad72d57a75e837e546a20020f8778f561d570c8851d513a62", size = 8756, upload-time = "2024-02-06T19:44:47.488Z" },
 ]
 
 [[package]]

@@ -8,16 +8,22 @@ For windows, create a VE using:
 python -m venv .venv
 ```
 
+or using uv:
+
+```powershell
+uv venv
+```
+
 and activate by running:
 
 ```powershell
 venv/scripts/activate
 ```
 
-Alternatively, if you have installed `make` previously, you can simply run the make command:
+You can then sync your virtual environment by doing:
 
-```powershell
-make virtual-environment
+```
+uv sync --all-extras
 ```
 
 ## Environmental Variables
@@ -30,7 +36,7 @@ cp .env.example .env
 
 For instructions on how to get an OpenRouter API Key, please refer to the [OpenRouter API Key](#openrouter-api-key) section.
 
-## OpenRouter API Key
+### OpenRouter API Key
 
 To support our workflow, we will require the use of LLMs.
 As OpenRouter supports the usage of free models from various providers, we will use it as our LLM provider.
@@ -38,3 +44,11 @@ As OpenRouter supports the usage of free models from various providers, we will 
 To get the API Key, we can simply get it by logging into OpenRouter using a GitHub/Google account (or creating your own account), and heading over to https://openrouter.ai/settings/keys to create an API Key by clicking on the `Create API Key` button, as shown below:
 
 ![](assets/OpenRouter.png)
+
+## Workflow Run
+
+To run the workflow, you can simply run the following:
+
+```
+pymake run
+```
