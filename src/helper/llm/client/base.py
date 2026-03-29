@@ -1,5 +1,4 @@
 # Standard Library Packages
-import json
 
 # Third Party Packages
 from loguru import logger
@@ -8,6 +7,8 @@ from pydantic import BaseModel
 
 # Local Project
 from src.constants import JOB_CATEGORIES
+from src.helper.llm.constants import JobCategoryOutput
+from src.helper.retry import llm_retry_decorator
 
 
 class LLMClient:
@@ -27,10 +28,10 @@ class LLMClient:
         reasoning_enabled: bool = True,
         response_format: BaseModel | dict | None = None,
         **kwargs,
-    ) -> BaseModel | str:
+    ) -> str:
         logger.info("Calling LLM with prompt {}", prompt)
 
-        # @llm_retry_decorator
+        @llm_retry_decorator
         async def _get_chat_completion(response_format=response_format):
             try:
                 # Create the chat.completions.create kwargs
@@ -70,14 +71,29 @@ class LLMClient:
                     raise Exception(f"Error code: {error_code}, Error Message: {error_msg}")
 
                 response_content = choice.message.content.strip()
-                response_content_parsed = json.loads(response_content)
-                job_category = response_content_parsed["job_category"]
-                if job_category not in JOB_CATEGORIES:
-                    logger.info("LLM Wrong Output detected.")
-                    raise ValueError(f"LLM Response content should be in {JOB_CATEGORIES}.")
-                return job_category
+                return response_content
             except Exception as e:
                 logger.error("Exception occurred: {}", e)
                 raise Exception(e)
 
         return await _get_chat_completion()
+
+    @llm_retry_decorator
+    async def get_job_category(
+        self, prompt: str, model: str, reasoning_enabled: bool = True
+    ) -> str:
+        try:
+            result = await self.get_chat_completion(
+                prompt=prompt,
+                model=model,
+                reasoning_enabled=reasoning_enabled,
+                response_format=JobCategoryOutput,
+            )
+            job_category_output = JobCategoryOutput.model_validate_json(result)
+            job_category = job_category_output.job_category
+            if job_category not in JOB_CATEGORIES:
+                logger.info("LLM Wrong Output detected.")
+                raise ValueError(f"LLM Response content should be in {JOB_CATEGORIES}.")
+            return job_category
+        except Exception as e:
+            raise e
