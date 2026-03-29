@@ -16,7 +16,7 @@ from src.db.repositories import JobResultsRepository, WorkflowRunsRepository
 from src.db.utils import get_hours_old
 from src.helper.job_search import search_jobs
 from src.helper.llm.client import LLMClient, OpenRouterLLMClient
-from src.helper.llm.constants import JobCategoryOutput, OpenRouterFreeModels
+from src.helper.llm.constants import OpenRouterFreeModels
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (
@@ -40,17 +40,16 @@ TELEGRAM_JOB_BATCH_PER_MSG = 5
 
 
 # --- Helper functions --- #
-async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame, model: str) -> list[str]:
+async def get_job_category_batch(client: LLMClient, df: pd.DataFrame, model: str) -> list[str]:
     llm_results = []
     for i in range(0, len(df), BATCH_SIZE):
         start_time = time.time()
         temp_df = df.iloc[i : i + BATCH_SIZE]
         tasks = [
-            client.get_chat_completion(
+            client.get_job_category(
                 prompt=get_category_prompt(job_details=format_job_description(row)),
                 model=model,
                 reasoning_enabled=True,
-                response_format=JobCategoryOutput,
             )
             for _, row in temp_df.iterrows()
         ]
@@ -117,14 +116,14 @@ async def main():
         company_df = final_df[final_df["company"] == company]
         # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
         try:
-            llm_results = await get_llm_batch_calls(client, company_df, LLM_MODEL)
+            llm_results = await get_job_category_batch(client, company_df, LLM_MODEL)
         except Exception as e:
             logger.warning(
                 "Current LLM model {} has errored out due to {}. Defaulting to OpenRouter available models...",
                 LLM_MODEL,
                 e,
             )
-            llm_results = await get_llm_batch_calls(client, company_df, FALLBACK_MODEL)
+            llm_results = await get_job_category_batch(client, company_df, FALLBACK_MODEL)
 
         company_df["job_category"] = llm_results
 
