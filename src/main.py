@@ -16,7 +16,7 @@ from src.db.repositories import JobResultsRepository, WorkflowRunsRepository
 from src.db.utils import get_hours_old
 from src.helper.job_search import search_jobs
 from src.helper.llm.client import LLMClient, OpenRouterLLMClient
-from src.helper.llm.constants import OpenRouterFreeModels
+from src.helper.llm.constants import JobCategoryOutput, OpenRouterFreeModels
 from src.helper.llm.prompts import get_category_prompt
 from src.helper.telegram import TeleBot
 from src.utils import (
@@ -50,6 +50,7 @@ async def get_llm_batch_calls(client: LLMClient, df: pd.DataFrame, model: str) -
                 prompt=get_category_prompt(job_details=format_job_description(row)),
                 model=model,
                 reasoning_enabled=True,
+                response_format=JobCategoryOutput,
             )
             for _, row in temp_df.iterrows()
         ]
