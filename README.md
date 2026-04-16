@@ -17,7 +17,7 @@ uv venv
 and activate by running:
 
 ```powershell
-venv/scripts/activate
+.venv/scripts/activate
 ```
 
 You can then sync your virtual environment by doing:
