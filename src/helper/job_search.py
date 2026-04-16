@@ -33,5 +33,5 @@ def search_jobs(
         jobs = _search_jobs()
         return jobs
     except Exception as e:
-        logger.info("An error occurred: {}. Skipping for {}...", e, search_term)
+        logger.error("An error occurred: {}. Skipping for {}...", e, search_term)
         return pd.DataFrame()
