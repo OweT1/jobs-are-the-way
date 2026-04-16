@@ -54,6 +54,7 @@ class Settings(BaseSettings):
     data_analyst_intern_thread_id: str
     software_engineer_intern_thread_id: str
     others_intern_thread_id: str
+    tech_prog_thread_id: str
     senior_tech_thread_id: str
     not_relevant_thread_id: str
 

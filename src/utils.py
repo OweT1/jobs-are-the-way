@@ -32,6 +32,7 @@ def get_job_thread_id(job_category: str) -> dict[str, str]:
         "DATA_ANALYST_INTERN": settings.data_analyst_intern_thread_id,
         "SOFTWARE_ENGINEER_INTERN": settings.software_engineer_intern_thread_id,
         "OTHERS_INTERN": settings.others_intern_thread_id,
+        "TECH_PROG": settings.tech_prog_thread_id,
         "SENIOR_TECH": settings.senior_tech_thread_id,
         "NOT_RELEVANT": settings.not_relevant_thread_id,
     }

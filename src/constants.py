@@ -35,6 +35,7 @@ JOB_CATEGORIES = [
     "DATA_SCIENTIST",
     "DATA_ANALYST",
     "SOFTWARE_ENGINEER",
+    "TECH_PROG",
     "OTHERS",
     "SENIOR_TECH",
     "NOT_RELEVANT",
@@ -65,6 +66,12 @@ JOB_CATEGORIES_DESCRIPTIONS = {
         Common Job Title(s): Data Analyst / Business Analyst
         Common Technology Stack/Terms: SQL, Excel, BI Tools (Tableau, Power BI, Looker), Python, Data Visualization, Reporting, Dashboards
     """,
+    "TECH_PROG": """
+        Graduate Technology Programmes / General Technology Internship Programmes - General programmes for Undergraduates / Graduates, with a wide variety of Technology functions (eg Software Engineer, Data Science, AI Engineer).
+
+        Common Job Title(s): Graduate Technology Programme / Technology Internship Programme
+        Common Technology Stack/Terms: Programming Languages, General Knowledge of Technology
+    """,
     "SOFTWARE_ENGINEER": """
         Software Engineer - Design, build, test, and maintain software applications and systems. This includes developing backend services, frontend interfaces, or full-stack features, while writing clean, efficient, and maintainable code. Some work that typical Software Engineers do include designing and consuming APIs, working with various databases to store, retrieve and process data, as well as debugging and optimisation of code performance.
 
@@ -73,7 +80,6 @@ JOB_CATEGORIES_DESCRIPTIONS = {
     """,
     "OTHERS": """
         Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, Data Engineer, Data Scientist, Data Analyst or Software Engineer categories; such as Mobile Developer, QA Engineer, or any other similar Technology roles.
-        Additionally, Tech Graduate Programmes / General Technology Internship Programmes should fall under this category as well.
 
         Common Job Title(s): Mobile Developer / QA Engineer / DevOps Engineer / Site Reliability Engineer / IT Engineer
         Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, APIs, Cloud Services, DevOps Tools
