@@ -110,8 +110,12 @@ async def main():
         logger.info("Check 3: No jobs were found after removing blacklisted companies. Exiting...")
         return
 
-    final_df["workflow_id"] = workflow_id  # set workflow_id for job runs
+    # Set workflow_id, created_at, updated_at columns for job runs
+    final_df["workflow_id"] = workflow_id
+    final_df["created_at"] = workflow_runtime
+    final_df["updated_at"] = workflow_runtime
 
+    # Iterate through companies
     for company in get_unique_objs(final_df["company"]):
         company_df = final_df[final_df["company"] == company]
         # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
