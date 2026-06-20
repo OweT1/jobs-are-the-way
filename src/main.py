@@ -24,7 +24,6 @@ from src.utils import (
     format_company_message,
     format_job_description,
     get_job_thread_id,
-    get_unique_objs,
     postprocess_df,
     preprocess_df,
 )
@@ -116,8 +115,14 @@ async def main():
     final_df["updated_at"] = workflow_runtime
 
     # Iterate through companies
-    for company in get_unique_objs(final_df["company"]):
-        company_df = final_df[final_df["company"] == company]
+    for group1, company_df in final_df.groupby(["company"]):
+        (company,) = group1
+
+        # De-duplicate the df before sending Telegram message - possible multiple workflows running at once
+        logger.info("Before deduplicate check for {}: {} rows", company, len(company_df))
+        company_df = await jobs_repo.check_jobs_existence(db, company_df)
+        logger.info("After deduplicate check for {}: {} rows", company, len(company_df))
+
         # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
         try:
             llm_results = await get_job_category_batch(client, company_df, LLM_MODEL)
@@ -136,10 +141,23 @@ async def main():
         logger.info("df for company {}:", company)
         logger.info(company_df)
 
-        for job_category in get_unique_objs(company_df["job_category"]):
+        for group2, job_df in company_df.groupby(["job_category"]):
+            (job_category,) = group2
+
+            # De-duplicate the df before sending Telegram message - possible multiple workflows running at once
+            logger.info(
+                "Before deduplicate check for {}, {}: {} rows", company, job_category, len(job_df)
+            )
+            job_df = await jobs_repo.check_jobs_existence(db, job_df)
+            logger.info(
+                "After deduplicate check for {}, {}: {} rows", company, job_category, len(job_df)
+            )
+
+            if len(job_df) == 0:
+                continue
+
             thread_id = get_job_thread_id(job_category)
             logger.info("Sending message to {} channel", job_category)
-            job_df = company_df[company_df["job_category"] == job_category]
 
             for i in range(0, len(job_df), TELEGRAM_JOB_BATCH_PER_MSG):
                 temp_df = job_df.iloc[i : i + TELEGRAM_JOB_BATCH_PER_MSG]
