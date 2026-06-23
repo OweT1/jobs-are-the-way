@@ -43,54 +43,216 @@ JOB_CATEGORIES = [
 
 JOB_CATEGORIES_DESCRIPTIONS = {
     "AIML_ENGINEER": """
-        Artificial Intelligence Engineer / Machine Learning Engineer - Works on building, training, evaluating, and deploying machine learning or AI models, including model pipelines, inference services, and MLOps workflows.
+        Artificial Intelligence Engineer / Machine Learning Engineer
 
-        Common Job Title(s): AI Engineer / Artificial Intelligence Engineer / ML Engineer / Machine Learning Engineer
-        Common Technology Stack/Terms: Python, Go, C++, Rust, Tensorflow/PyTorch, CUDA, Traditional Machine Learning, Deep Learning, LLMs, Model Serving, MLOps
+        WHAT THEY DO: Builds, trains, evaluates, and deploys machine learning or AI models. Core work involves
+        designing model architectures, managing training pipelines (data ingestion → training → evaluation →
+        serving), developing inference services, and maintaining MLOps infrastructure. Distinct from a Data
+        Scientist in that the focus is engineering production-grade ML systems, not exploratory analysis or
+        statistical modelling.
+
+        BOUNDARY CASES:
+        - If the role primarily trains and deploys models (not just analyses data) → AIML_ENGINEER
+        - If the role applies ML as a tool within a product feature but the primary identity is software
+          development → SOFTWARE_ENGINEER
+        - If the role is LLM prompt engineering or AI product management with no model training → NOT_RELEVANT
+
+        Common Job Titles: AI Engineer, Artificial Intelligence Engineer, ML Engineer, Machine Learning
+        Engineer, Applied Scientist (engineering-heavy), Research Engineer, MLOps Engineer, AI Infrastructure
+        Engineer
+
+        Common Technologies: Python, Go, C++, Rust, PyTorch, TensorFlow, JAX, CUDA, ONNX, Triton,
+        HuggingFace, LLMs / Foundation Models, Model Serving (vLLM, TorchServe, Ray Serve), Feature Stores,
+        Experiment Tracking (MLflow, W&B), Kubeflow, Airflow, Docker, Kubernetes
     """,
     "DATA_ENGINEER": """
-        Data Engineer - Works on designing, building, and maintaining data ETL/ELT pipelines, data warehouses, and data infrastructure using technologies such as SQL, Spark, Snowflake, Microsoft Azure, or similar platforms.
+        Data Engineer
 
-        Common Job Title(s): Data Engineer
-        Common Technology Stack/Terms: SQL, NoSQL, Spark, Hadoop, MapReduce, Data Streaming, Flink, Kafka, ETL/ELT pipelines, Airflow, Cloud Computing, Databases, APIs, Snowflake, Microsoft Azure, Google Cloud Platform, AWS
+        WHAT THEY DO: Designs, builds, and maintains the infrastructure that moves and transforms data at
+        scale — ETL/ELT pipelines, data warehouses, data lakes, and streaming systems. Primary output is
+        reliable, well-modelled data that downstream consumers (analysts, scientists) can trust. Distinct
+        from a Software Engineer in that the domain is data infrastructure, not general application
+        development; distinct from a Data Scientist in that the work is engineering pipelines, not
+        extracting insights.
+
+        BOUNDARY CASES:
+        - If the role builds data pipelines and warehouses as the primary focus → DATA_ENGINEER
+        - If the role involves some pipeline work but the core output is software products → SOFTWARE_ENGINEER
+        - If the role is primarily consuming clean data for analysis or modelling → DATA_SCIENTIST or DATA_ANALYST
+
+        Common Job Titles: Data Engineer, Analytics Engineer, Data Platform Engineer, ETL Developer,
+        Data Infrastructure Engineer, Big Data Engineer
+
+        Common Technologies: SQL, Python, Spark, Hadoop, Kafka, Flink, dbt, Airflow, Prefect, Dagster,
+        Snowflake, BigQuery, Redshift, Delta Lake, Iceberg, AWS (S3, Glue, EMR), GCP (Dataflow, Pub/Sub),
+        Azure (Data Factory, Synapse), REST APIs, Docker, Kubernetes
     """,
     "DATA_SCIENTIST": """
-        Data Scientist - Works on analyzing data to extract insights, build predictive or statistical models, perform experimentation, and communicate findings to support business or product decisions.
+        Data Scientist
 
-        Common Job Title(s): Data Scientist / Data Science Analyst / Data Science Engineer
-        Common Technology Stack/Terms: Python, R, SQL, Pandas, NumPy, Scikit-learn, Statistical Modeling, Experimentation, A/B Testing, Data Visualization
+        WHAT THEY DO: Uses statistical methods, machine learning, and experimentation to extract actionable
+        insights from data and build predictive models that inform product or business decisions. Primary
+        output is insight, predictions, or experiment results — not production pipelines or deployed services.
+        Distinct from a Data Analyst in that the work involves building models and running experiments, not
+        just descriptive reporting; distinct from an AIML Engineer in that the focus is on analysis and
+        modelling for decisions, not engineering production ML systems at scale.
+
+        BOUNDARY CASES:
+        - If the role designs A/B tests, builds predictive models, and communicates findings → DATA_SCIENTIST
+        - If the role is purely dashboard creation and SQL reporting → DATA_ANALYST
+        - If the role deploys and maintains ML models in production systems at engineering scale → AIML_ENGINEER
+
+        Common Job Titles: Data Scientist, Applied Scientist (research-heavy), Data Science Analyst,
+        Data Science Engineer, Quantitative Analyst, Research Scientist (non-ML infra)
+
+        Common Technologies: Python, R, SQL, Pandas, NumPy, Scikit-learn, SciPy, Statsmodels, XGBoost,
+        LightGBM, Jupyter, A/B Testing frameworks, Causal Inference, Bayesian methods, Data Visualization
+        (Matplotlib, Seaborn, Plotly), Databricks, Spark (for data access)
     """,
     "DATA_ANALYST": """
-        Data Analyst - Works on querying, cleaning, and analyzing data to produce dashboards, reports, and ad-hoc analyses using tools such as SQL, Excel, BI tools, or Python, primarily focused on descriptive and diagnostic analytics.
+        Data Analyst
 
-        Common Job Title(s): Data Analyst / Business Analyst
-        Common Technology Stack/Terms: SQL, Excel, BI Tools (Tableau, Power BI, Looker), Python, Data Visualization, Reporting, Dashboards
+        WHAT THEY DO: Queries, cleans, and interprets data to produce dashboards, reports, and ad-hoc
+        analyses that answer specific business questions. Work is primarily descriptive and diagnostic —
+        understanding what happened and why — rather than predictive or prescriptive. Distinct from a
+        Data Scientist in that the work rarely involves building statistical or ML models; distinct from a
+        Data Engineer in that they consume data infrastructure rather than build it.
+
+        BOUNDARY CASES:
+        - If the role is primarily reporting, dashboarding, and SQL querying for business stakeholders → DATA_ANALYST
+        - If the role involves building predictive models or running controlled experiments → DATA_SCIENTIST
+        - "Business Analyst" titles that focus on data and BI tools → DATA_ANALYST; those focused on
+          process/requirements with no data tooling → NOT_RELEVANT
+
+        Common Job Titles: Data Analyst, Business Analyst (data-focused), BI Analyst, Reporting Analyst,
+        Analytics Analyst, Insights Analyst, Operations Analyst (data-focused)
+
+        Common Technologies: SQL, Excel, Google Sheets, Tableau, Power BI, Looker, Metabase, Mode,
+        Python (basic Pandas), R (basic), Data Visualization, Reporting automation
     """,
     "TECH_PROG": """
-        Graduate Technology Programmes / General Technology Internship Programmes - General programmes for Undergraduates / Graduates, with a wide variety of Technology functions (eg Software Engineer, Data Science, AI Engineer).
+        Graduate / Internship Technology Programmes
 
-        Common Job Title(s): Graduate Technology Programme / Technology Internship Programme
-        Common Technology Stack/Terms: Programming Languages, General Knowledge of Technology
+        WHAT THEY DO: Structured entry-level programmes for undergraduate or fresh-graduate candidates
+        that rotate across or assign candidates into a variety of technology functions (e.g., Software
+        Engineering, Data, AI/ML, Product, Infrastructure). The defining feature is the programme
+        structure itself — cohort-based hiring, rotation tracks, or formal graduate schemes — rather than
+        a single specialist function. These roles may sit across any tech sub-discipline and should be
+        classified here rather than into a specific technical category.
+
+        BOUNDARY CASES:
+        - If the job posting is a named graduate programme or internship programme with broad tech scope → TECH_PROG
+        - If the posting is a direct individual-contributor internship with a specific, well-defined
+          technical role (e.g., "Software Engineering Intern") → classify by the underlying function
+          (SOFTWARE_ENGINEER, DATA_ENGINEER, etc.)
+        - If the programme is for non-tech functions (e.g., finance, HR graduate programmes) → NOT_RELEVANT
+
+        Common Job Titles: Graduate Technology Programme, Technology Graduate, Technology Internship
+        Programme, Technology Associate Programme, Rotational Technology Analyst, Digital Graduate Scheme
+
+        Common Signals: Words like "programme", "cohort", "graduate scheme", "rotational", "track",
+        paired with broad technology or digital scope; no requirement for prior full-time experience
     """,
     "SOFTWARE_ENGINEER": """
-        Software Engineer - Design, build, test, and maintain software applications and systems. This includes developing backend services, frontend interfaces, or full-stack features, while writing clean, efficient, and maintainable code. Some work that typical Software Engineers do include designing and consuming APIs, working with various databases to store, retrieve and process data, as well as debugging and optimisation of code performance.
+        Software Engineer
 
-        Common Job Title(s): Software Engineer / Software Development Engineer / Software Developer / Backend Engineer / Backend Developer / Frontend Engineer / Frontend Developer / Fullstack Engineer / Fullstack Developer
-        Common Technology Stack/Terms: Java, Python, C++, Go, JavaScript, TypeScript, RESTful APIs, Microservices, Distributed Systems, React, Angular, Vue, HTML, CSS, SQL (MySQL / PostgreSQL), NoSQL, Redis, AWS, GCP, Azure, Docker, Kubernetes, Git, CI/CD, Linux, Monitoring, Unit Testing, Integration Testing, System Design
+        WHAT THEY DO: Designs, builds, tests, and maintains software applications and systems — covering
+        backend services, frontend interfaces, APIs, and full-stack features. Core work includes writing
+        clean, maintainable code; designing system architecture; integrating with databases and third-party
+        services; and optimising for performance, reliability, and scalability. This is the broadest
+        engineering category and is the default for general programming roles not better captured by a
+        more specific category.
+
+        BOUNDARY CASES:
+        - Backend, frontend, fullstack, API, and platform engineering roles → SOFTWARE_ENGINEER
+        - If the role's primary domain is data pipelines and warehousing → DATA_ENGINEER
+        - If the role's primary domain is training and deploying ML models → AIML_ENGINEER
+        - Mobile development, QA, DevOps, or SRE → OTHERS
+        - If the role requires 2+ years of full-time experience and carries a senior signal in the title
+          (Senior, Lead, Principal, etc.) → SENIOR_TECH
+
+        Common Job Titles: Software Engineer, Software Development Engineer (SDE), Software Developer,
+        Backend Engineer, Backend Developer, Frontend Engineer, Frontend Developer, Fullstack Engineer,
+        Fullstack Developer, Platform Engineer, API Engineer, Systems Engineer (software-focused)
+
+        Common Technologies: Java, Python, C++, C#, Go, Rust, JavaScript, TypeScript, Ruby, PHP;
+        React, Angular, Vue, Next.js, HTML, CSS; RESTful APIs, GraphQL, gRPC, Microservices, Event-driven
+        Architecture; MySQL, PostgreSQL, MongoDB, Redis, Elasticsearch; AWS, GCP, Azure; Docker,
+        Kubernetes, CI/CD (GitHub Actions, Jenkins); Git, Linux, System Design, Unit & Integration Testing
     """,
     "OTHERS": """
-        Other Tech Roles - Jobs within the technology sector that do not fall under AI/ML Engineer, Data Engineer, Data Scientist, Data Analyst or Software Engineer categories; such as Mobile Developer, QA Engineer, or any other similar Technology roles.
+        Other Technology Roles
 
-        Common Job Title(s): Mobile Developer / QA Engineer / DevOps Engineer / Site Reliability Engineer / IT Engineer
-        Common Technology Stack/Terms: Programming Languages, Web Frameworks, Databases, APIs, Cloud Services, DevOps Tools
+        WHAT THEY DO: Technology roles that do not fit into any of the defined specialist categories
+        (AIML_ENGINEER, DATA_ENGINEER, DATA_SCIENTIST, DATA_ANALYST, SOFTWARE_ENGINEER). This includes
+        mobile development, quality assurance, DevOps, site reliability, IT operations, security
+        engineering, and other technology-adjacent disciplines. Use this category when the role is clearly
+        within the technology sector but does not map to a more specific category above.
+
+        BOUNDARY CASES:
+        - Mobile development (iOS, Android) → OTHERS
+        - QA / Test Automation Engineer → OTHERS
+        - DevOps / Platform / Infrastructure Engineer (infra-focused, not software product) → OTHERS
+        - Site Reliability Engineer (SRE) → OTHERS
+        - Cybersecurity / Information Security Engineer → OTHERS
+        - IT support, IT operations, systems administration → OTHERS
+        - If the role is non-junior and carries senior signals in the title → SENIOR_TECH (takes priority)
+
+        Common Job Titles: Mobile Developer, iOS Engineer, Android Engineer, QA Engineer, Test Engineer,
+        SDET, DevOps Engineer, Site Reliability Engineer (SRE), Infrastructure Engineer, Cloud Engineer,
+        Security Engineer, IT Engineer, Systems Administrator, Network Engineer, Technical Support Engineer
+
+        Common Technologies: Swift, Kotlin, React Native, Flutter; Selenium, Cypress, Playwright, Appium;
+        Terraform, Ansible, Helm, Prometheus, Grafana; Cloud platforms (AWS, GCP, Azure) from an
+        infrastructure/operations perspective; Networking, Linux administration
     """,
     "SENIOR_TECH": """
-        Senior Technology Roles - Jobs that are related to technology, but are of mid/senior level (not junior level), where mid/senior level roles are defined to require minimally 2 years of full-time working experience.
+        Senior / Mid-Level Technology Roles
 
-        Common Terms in Non-Junior Job Titles: Senior, Lead, Principal, Expert, Manager, President, Vice-President, VP etc..
+        WHAT THEY DO: Technology roles across any discipline (software engineering, data, AI/ML, DevOps,
+        etc.) that explicitly require prior full-time working experience — defined as a minimum of 2 years
+        — at the time of application. The seniority signal in the job title or requirements is the primary
+        classifier criterion, not the technical domain. This category takes priority over all domain-specific
+        categories (SOFTWARE_ENGINEER, DATA_ENGINEER, etc.) when the seniority threshold is clearly met.
+
+        BOUNDARY CASES:
+        - "Senior Software Engineer", "Lead Data Engineer", "Principal ML Engineer" → SENIOR_TECH
+          (regardless of domain)
+        - Roles with managerial or people-leadership scope in tech (e.g. Engineering Manager,
+          VP Engineering) → SENIOR_TECH
+        - A role titled "Software Engineer" that incidentally lists 3+ years experience as preferred
+          but not required may still be entry/junior level — assess the spirit of the posting, not just
+          the keyword
+        - Graduate programmes or internships (even if competitive) → TECH_PROG, not SENIOR_TECH
+
+        Strong Title Signals (any of these in the title strongly indicate SENIOR_TECH):
+        Senior, Sr., Lead, Principal, Staff, Distinguished Fellow, Architect, Manager, Director,
+        Head of, Vice President (VP), President, C-suite (CTO, CDO, CIO)
+
+        Strong Requirement Signals: "X+ years of experience", "proven track record", "prior industry
+        experience required", mentioning leadership or mentoring responsibilities
     """,
     "NOT_RELEVANT": """
-        Not Relevant - Jobs that are not relevant to the target scope, primarily non-tech roles such as marketing, sales, business, finance, traditional engineering etc.
+        Not Relevant
+
+        WHAT THEY ARE: Roles that fall outside the defined technology job scope. This covers any position
+        whose primary function is not in software engineering, data, AI/ML, or related technical disciplines.
+        Use this when the role is clearly non-technical or is a business/operational function that happens
+        to sit within a technology company.
+
+        BOUNDARY CASES:
+        - Pure business functions regardless of industry (finance, accounting, HR, legal, compliance,
+          sales, marketing, operations, strategy) → NOT_RELEVANT
+        - Traditional/physical engineering (civil, mechanical, electrical) → NOT_RELEVANT
+        - Product Manager, Project Manager, Scrum Master, Agile Coach (non-coding) → NOT_RELEVANT
+        - UX/UI Designer, Graphic Designer → NOT_RELEVANT
+        - Technical Recruiter, IT Recruiter → NOT_RELEVANT
+        - LLM / AI "prompt engineer" roles with no coding or model-training component → NOT_RELEVANT
+        - Business Analyst focused on process/requirements (no data tooling) → NOT_RELEVANT
+        - Customer Success, Technical Account Manager (relationship-focused) → NOT_RELEVANT
+
+        Note: A non-tech role at a tech company is still NOT_RELEVANT. Classification is based on the
+        nature of the work, not the employer's industry.
     """,
 }
 
