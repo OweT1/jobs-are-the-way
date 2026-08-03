@@ -10,13 +10,13 @@ from src.db.pg import PostgresDB
 from src.db.repositories import WorkflowRunsRepository
 
 # --- Constants --- #
-WORKFLOWRUNS_REPO = WorkflowRunsRepository()
+WORKFLOWRUNS_REPO = WorkflowRunsRepository(PostgresDB())
 
 
 # --- Util Functions --- #
-def get_hours_old(db: PostgresDB) -> int:
+def get_hours_old() -> int:
     try:
-        latest_timestamp = WORKFLOWRUNS_REPO._get_latest_timestamp_with_completed(db)
+        latest_timestamp = WORKFLOWRUNS_REPO._get_latest_timestamp_with_completed()
         if latest_timestamp:
             time_diff: datetime.timedelta = (
                 datetime.datetime.now(datetime.timezone.utc)

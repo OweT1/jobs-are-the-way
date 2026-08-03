@@ -15,12 +15,12 @@ from src.helper.retry import db_retry_decorator
 
 # --- DB Functions --- #
 class WorkflowRunsRepository(BaseRepository):
-    def __init__(self):
-        super().__init__(WorkflowRuns)
+    def __init__(self, db: PostgresDB):
+        super().__init__(db=db, table=WorkflowRuns)
 
     @db_retry_decorator
-    def _get_latest_timestamp_with_completed(self, db: PostgresDB) -> datetime.datetime:
-        with db.session() as session:
+    def _get_latest_timestamp_with_completed(self) -> datetime.datetime:
+        with self.db.session() as session:
             stmt = select(func.max(self.table.updated_at)).where(WorkflowRuns.completed)
             latest_timestamp = session.execute(stmt).scalar_one_or_none()
         return latest_timestamp
@@ -28,7 +28,6 @@ class WorkflowRunsRepository(BaseRepository):
     @db_retry_decorator
     def upsert_workflow_run(
         self,
-        db: PostgresDB,
         workflow_id: str,
         workflow_runtime: datetime.datetime,
         workflow_is_completed: bool,
@@ -40,7 +39,7 @@ class WorkflowRunsRepository(BaseRepository):
             "updated_at": workflow_runtime,
         }
 
-        with db.session() as session:
+        with self.db.session() as session:
             stmt = insert(WorkflowRuns).values(workflow_details)
             session.execute(
                 stmt.on_conflict_do_update(

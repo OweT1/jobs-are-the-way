@@ -12,10 +12,11 @@ from src.constants import (
     REQUIRED_FIELDS,
 )
 from src.core.config import settings
+from src.db.pg import PostgresDB
 from src.db.repositories import JobResultsRepository
 
 # --- Constants --- #
-JOBRESULTS_REPO = JobResultsRepository()
+JOBRESULTS_REPO = JobResultsRepository(PostgresDB())
 
 
 # --- Functions --- #

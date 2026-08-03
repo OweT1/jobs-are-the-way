@@ -9,16 +9,12 @@ from src.db.repositories import (
 from src.db.utils import get_hours_old
 
 __all__ = [
-    # DB Models
     "Base",
-    # DB Repositories
     "BaseRepository",
     "JobResults",
     "JobResultsRepository",
-    # DB
     "PostgresDB",
     "WorkflowRuns",
     "WorkflowRunsRepository",
-    # Helper functions
     "get_hours_old",
 ]

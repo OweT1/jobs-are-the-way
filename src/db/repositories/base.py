@@ -12,7 +12,8 @@ from src.helper.retry import db_retry_decorator
 
 
 class BaseRepository:
-    def __init__(self, table: Base):
+    def __init__(self, db: PostgresDB, table: Base):
+        self.db = db
         self.table = table
 
     def _get_table_columns(self) -> list[str]:
@@ -21,8 +22,8 @@ class BaseRepository:
         return col_names
 
     @db_retry_decorator
-    def delete_old_transactions(self, db: PostgresDB):
-        with db.session() as session:
+    def delete_old_transactions(self):
+        with self.db.session() as session:
             stmt = delete(self.table).where(
                 self.table.updated_at
                 < func.now() - text(f"INTERVAL '{DB_CLEAN_UP_DAYS_THRESHOLD} days'")

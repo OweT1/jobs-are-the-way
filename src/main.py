@@ -80,15 +80,15 @@ async def main():
     tele_bot = TeleBot()
     client = OpenRouterLLMClient()
     db = PostgresDB()
-    hours_old: int = get_hours_old(db=db)
+    hours_old: int = get_hours_old()
     workflow_id = str(uuid.uuid4())
     workflow_runtime = datetime.now()
 
-    jobs_repo = JobResultsRepository()
-    workflow_repo = WorkflowRunsRepository()
+    jobs_repo = JobResultsRepository(db)
+    workflow_repo = WorkflowRunsRepository(db)
 
     logger.info("Starting workflow...")
-    workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, False)
+    workflow_repo.upsert_workflow_run(workflow_id, workflow_runtime, False)
 
     logger.info("Hours old: {}", hours_old)
     logger.info("Searching for jobs...")
@@ -106,7 +106,7 @@ async def main():
 
     # De-duplicate dataframe rows against DB
     logger.info("Before de-duplicating against DB: {} rows", len(final_df))
-    final_df = await jobs_repo.check_jobs_existence(db, final_df)
+    final_df = await jobs_repo.check_jobs_existence(final_df)
     logger.info("After de-duplicating against DB: {} rows", len(final_df))
 
     # Exit if no jobs were found after de-duplication
@@ -135,7 +135,7 @@ async def main():
 
         # De-duplicate the df before sending Telegram message - possible multiple workflows running at once
         logger.info("Before deduplicate check for {}: {} rows", company, len(company_df))
-        company_df = await jobs_repo.check_jobs_existence(db, company_df)
+        company_df = await jobs_repo.check_jobs_existence(company_df)
         logger.info("After deduplicate check for {}: {} rows", company, len(company_df))
 
         # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
@@ -163,7 +163,7 @@ async def main():
             logger.info(
                 "Before deduplicate check for {}, {}: {} rows", company, job_category, len(job_df)
             )
-            job_df = await jobs_repo.check_jobs_existence(db, job_df)
+            job_df = await jobs_repo.check_jobs_existence(job_df)
             logger.info(
                 "After deduplicate check for {}, {}: {} rows", company, job_category, len(job_df)
             )
@@ -181,7 +181,7 @@ async def main():
 
             # Save to DB
             logger.info("Adding {} rows to 'job_results' table", len(job_df))
-            jobs_repo.add_jobs(db, job_df)
+            jobs_repo.add_jobs(job_df)
             logger.info("Successfully added {} rows to 'job_results' table", len(job_df))
 
         logger.info("Checking if {} is big tech...", company)
@@ -196,7 +196,7 @@ async def main():
             )
 
     logger.info("Workflow run succeeded. Updating workflow in 'workflow_runs' table.")
-    workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, True)
+    workflow_repo.upsert_workflow_run(workflow_id, workflow_runtime, True)
     logger.info("Successfully updated workflow_run")
 
 
