@@ -57,6 +57,7 @@ class Settings(BaseSettings):
     tech_prog_thread_id: str
     senior_tech_thread_id: str
     not_relevant_thread_id: str
+    big_tech_thread_id: str
 
     # Postgres
     postgres_db_url: str

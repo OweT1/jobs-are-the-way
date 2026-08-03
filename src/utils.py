@@ -6,6 +6,7 @@ from unstructured.cleaners.core import group_broken_paragraphs
 
 # Local Project
 from src.constants import (
+    BIG_TECH_COMPANIES,
     BLACKLIST_COMPANIES,
     NON_RELEVANT_CHANNEL_CATEGORIES,
     REQUIRED_FIELDS,
@@ -37,6 +38,10 @@ def get_job_thread_id(job_category: str) -> dict[str, str]:
         "NOT_RELEVANT": settings.not_relevant_thread_id,
     }
     return job_thread_ids.get(job_category, settings.not_relevant_thread_id)
+
+
+def is_big_tech(company_name: str) -> bool:
+    return company_name.lower().strip() in BIG_TECH_COMPANIES
 
 
 def _boldify_text(text: str):

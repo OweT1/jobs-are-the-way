@@ -35,6 +35,7 @@ jobs:
       TECH_PROG_THREAD_ID: ${{ vars.TECH_PROG_THREAD_ID }}
       SENIOR_TECH_THREAD_ID: ${{ vars.SENIOR_TECH_THREAD_ID }}
       NOT_RELEVANT_THREAD_ID: ${{ vars.NOT_RELEVANT_THREAD_ID }}
+      BIG_TECH_THREAD_ID: ${{ vars.BIG_TECH_THREAD_ID }}
       POSTGRES_DB_URL: ${{ secrets.POSTGRES_DB_URL }}
 
     steps:

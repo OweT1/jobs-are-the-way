@@ -9,7 +9,7 @@ import pandas as pd
 from loguru import logger
 
 # Local Project
-from src.constants import ALL_ROLES
+from src.constants import ALL_ROLES, BIG_TECH_JOB_CATEGORIES
 from src.core.config import settings
 from src.db.pg import PostgresDB
 from src.db.repositories import JobResultsRepository, WorkflowRunsRepository
@@ -24,6 +24,7 @@ from src.utils import (
     format_company_message,
     format_job_description,
     get_job_thread_id,
+    is_big_tech,
     postprocess_df,
     preprocess_df,
 )
@@ -58,6 +59,15 @@ async def get_job_category_batch(client: LLMClient, df: pd.DataFrame, model: str
         time_taken = time.time() - start_time
         await asyncio.sleep(max(0, MIN_INTERVAL - time_taken))
     return llm_results
+
+
+async def send_tele_msg_batch(
+    telegram_bot: TeleBot, df: pd.DataFrame, company: str, thread_id: str
+):
+    for i in range(0, len(df), TELEGRAM_JOB_BATCH_PER_MSG):
+        temp_df = df.iloc[i : i + TELEGRAM_JOB_BATCH_PER_MSG]
+        mes = format_company_message(company_df=temp_df, company=company)
+        await telegram_bot.send_message(mes, settings.telegram_channel_id, thread_id)
 
 
 # --- Main function --- #
@@ -156,18 +166,29 @@ async def main():
             if len(job_df) == 0:
                 continue
 
-            thread_id = get_job_thread_id(job_category)
             logger.info("Sending message to {} channel", job_category)
-
-            for i in range(0, len(job_df), TELEGRAM_JOB_BATCH_PER_MSG):
-                temp_df = job_df.iloc[i : i + TELEGRAM_JOB_BATCH_PER_MSG]
-                mes = format_company_message(company_df=temp_df, company=company)
-                await tele_bot.send_message(mes, settings.telegram_channel_id, thread_id)
+            await send_tele_msg_batch(
+                telegram_bot=tele_bot,
+                df=job_df,
+                company=company,
+                thread_id=get_job_thread_id(job_category),
+            )
 
             # Save to DB
             logger.info("Adding {} rows to 'job_results' table", len(job_df))
             jobs_repo.add_jobs(db, job_df)
             logger.info("Successfully added {} rows to 'job_results' table", len(job_df))
+
+        logger.info("Checking if {} is big tech...", company)
+        if is_big_tech(company):
+            logger.info("Sending to big tech thread!")
+            big_tech_df = company_df[company_df["job_category"].isin(BIG_TECH_JOB_CATEGORIES)]
+            await send_tele_msg_batch(
+                telegram_bot=tele_bot,
+                df=big_tech_df,
+                company=company,
+                thread_id=settings.big_tech_thread_id,
+            )
 
     logger.info("Workflow run succeeded. Updating workflow in 'workflow_runs' table.")
     workflow_repo.upsert_workflow_run(db, workflow_id, workflow_runtime, True)
