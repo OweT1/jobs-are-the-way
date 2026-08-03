@@ -1,6 +1,5 @@
 # Local Project
-from src.db.pg import PostgresDB
-from src.db.repositories import JobResultsRepository, WorkflowRunsRepository
+from src.db import JobResultsRepository, PostgresDB, WorkflowRunsRepository
 
 if __name__ == "__main__":
     db = PostgresDB()
