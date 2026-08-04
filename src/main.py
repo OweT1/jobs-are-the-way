@@ -138,6 +138,14 @@ async def main():
         company_df = await jobs_repo.check_jobs_existence(company_df)
         logger.info("After deduplicate check for {}: {} rows", company, len(company_df))
 
+        # Exit if no jobs were found after de-duplication
+        if len(company_df) == 0:
+            logger.info(
+                "Check 4: No jobs were found after dedeplicating from DB for {}. Exiting...",
+                company,
+            )
+            continue
+
         # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
         try:
             llm_results = await get_job_category_batch(client, company_df, LLM_MODEL)
@@ -169,6 +177,11 @@ async def main():
             )
 
             if len(job_df) == 0:
+                logger.info(
+                    "Check 5: No jobs were found after dedeplicating from DB for {}, {}. Exiting...",
+                    company,
+                    job_category,
+                )
                 continue
 
             logger.info("Sending message to {} channel", job_category)
