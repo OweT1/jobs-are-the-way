@@ -3,6 +3,7 @@ from .client import (
     LLMClient,
     OpenRouterLLMClient,
     build_cascading_client,
+    build_openrouter_cascading_client,
 )
 from .constants import (
     HuggingFaceFreeModels,
@@ -21,6 +22,7 @@ __all__ = [
     "OpenRouterLLMClient",
     "ResponseOutput",
     "build_cascading_client",
+    "build_openrouter_cascading_client",
     "get_category_prompt",
     "get_job_descriptions",
 ]

@@ -65,4 +65,4 @@ def build_openrouter_cascading_client(
     Model-tier fallback (preferred vs. fallback model) is handled separately by
     the caller, so this client only rotates across keys/providers per model.
     """
-    return CascadingLLMClient(clients if clients is not None else build_client_pool())
+    return CascadingLLMClient(clients if clients is not None else build_openrouter_client_pool())
