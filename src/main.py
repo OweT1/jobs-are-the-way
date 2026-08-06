@@ -21,7 +21,7 @@ from src.helper import TeleBot, search_jobs
 from src.helper.llm import (
     LLMClient,
     OpenRouterFreeModels,
-    OpenRouterLLMClient,
+    build_openrouter_cascading_client,
     get_category_prompt,
 )
 from src.utils import (
@@ -78,7 +78,7 @@ async def send_tele_msg_batch(
 # --- Main function --- #
 async def main():
     tele_bot = TeleBot()
-    client = OpenRouterLLMClient()
+    client = build_openrouter_cascading_client()
     db = PostgresDB()
     hours_old: int = get_hours_old()
     workflow_id = str(uuid.uuid4())
@@ -146,7 +146,10 @@ async def main():
             )
             continue
 
-        # Try using preferred LLM model first, else we will use whatever available model OpenRouter has
+        # Model-tier fallback: try the preferred model first, then fall back
+        # to any available OpenRouter model. Within each tier the cascading
+        # client rotates across API keys/providers automatically.
+        # TO-DO: change to (LLMClient, model_name) cascade - to make it easier for other clients & model combination to be used
         try:
             llm_results = await get_job_category_batch(client, company_df, LLM_MODEL)
         except Exception as e:

@@ -36,6 +36,25 @@ class Settings(BaseSettings):
     hf_api_key: str
     hf_base_url: str
 
+    # Optional comma-separated lists of additional keys (fallbacks/rotation).
+    # Falls back to the single {provider}_api_key when left empty.
+    openrouter_api_keys: str = ""
+    hf_api_keys: str = ""
+
+    @property
+    def openrouter_keys(self) -> list[str]:
+        keys = self._parse_keys(self.openrouter_api_keys)
+        return keys or [self.openrouter_api_key]
+
+    @property
+    def hf_keys(self) -> list[str]:
+        keys = self._parse_keys(self.hf_api_keys)
+        return keys or [self.hf_api_key]
+
+    @staticmethod
+    def _parse_keys(raw: str) -> list[str]:
+        return [key.strip() for key in raw.split(",") if key.strip()]
+
     # JobSpy
     default_location: str = DEFAULT_LOCATION
 

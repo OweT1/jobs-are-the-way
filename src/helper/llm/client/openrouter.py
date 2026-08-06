@@ -1,6 +1,7 @@
 # Local Project
 from src.core.config import settings
-from src.helper.llm.client.base import LLMClient
+
+from .base import LLMClient
 
 
 class OpenRouterLLMClient(LLMClient):

@@ -4,10 +4,14 @@ from loguru import logger
 from tenacity import (
     RetryCallState,
     retry,
+    retry_if_exception,
     retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
 )
+
+# Local Project
+from src.errors import is_rate_limit_error
 
 
 # --- Functions --- #
@@ -38,7 +42,25 @@ def create_retry_decorator(max_attempts=3, initial_wait=1, max_wait=10, exceptio
         )
 
 
+def create_retry_decorator_with_predicate(
+    retry_predicate, max_attempts=5, initial_wait=1, max_wait=10
+):
+    return retry(
+        stop=stop_after_attempt(max_attempts),
+        wait=wait_exponential(multiplier=initial_wait, min=initial_wait, max=max_wait),
+        retry=retry_predicate,
+        reraise=True,
+        before_sleep=_retry_state_before_sleep,
+    )
+
+
 # --- Retry Decorators --- #
+def _is_retryable_llm_error(error):
+    # Retry transient failures, but not rate-limit/quota errors (those fail
+    # over to the next client via CascadingLLMClient).
+    return not is_rate_limit_error(error)
+
+
 db_retry_decorator = create_retry_decorator()
 job_search_retry_decorator = create_retry_decorator()
 telegram_retry_decorator = create_retry_decorator(
@@ -51,8 +73,11 @@ telegram_retry_decorator = create_retry_decorator(
         telegram.error.TimedOut,
     ),
 )
-llm_retry_decorator = create_retry_decorator(
-    max_attempts=7,
+llm_retry_decorator = create_retry_decorator_with_predicate(
+    # Retry transient failures, but do NOT retry rate-limit/quota errors:
+    # those fail over to the next client via CascadingLLMClient instead.
+    retry_predicate=retry_if_exception(_is_retryable_llm_error),
+    max_attempts=5,
     initial_wait=15,
     max_wait=45,
 )
