@@ -1,54 +1,113 @@
 # jobs-are-the-way
 
-## Virtual Environment Set-up
+Automates scraping job postings and posting them to dedicated Telegram threads (channels).
 
-For windows, create a VE using:
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Prerequisites](#prerequisites)
+3. [Setup](#setup)
+4. [Environment Variables](#environment-variables)
+5. [Running the Workflow](#running-the-workflow)
+6. [Development](#development)
+7. [Further Docs](#further-docs)
+
+## Project Overview
+
+The project scrapes job listings, classifies each job into a category (e.g. Software
+Engineer, Data Engineer) using an LLM, and posts them into the matching Telegram thread.
+
+- **Job source:** JobSpy (scraping) — see `src/`
+- **Classification:** LLM via OpenRouter and/or HuggingFace
+- **Delivery:** Telegram Bot API, posting per category thread
+- **Storage:** PostgreSQL, with Alembic migrations
+- **Scheduling:** GitHub Actions hourly / daily workflows
+
+## Prerequisites
+
+- Python 3.13+
+- [uv](https://docs.astral.sh/uv/) (recommended for environment + dependency management)
+- Docker (only if you want to run PostgreSQL locally — see the database note in [Environment Variables](#environment-variables))
+- A Telegram Bot token + channel, meeting the environment variables below
+
+## Setup
+
+Create a virtual environment (Windows PowerShell):
 
 ```powershell
 python -m venv .venv
 ```
 
-or using uv:
+or with uv:
 
 ```powershell
 uv venv
 ```
 
-and activate by running:
+Activate it:
 
 ```powershell
-.venv/scripts/activate
+.venv/Scripts/activate
 ```
 
-You can then sync your virtual environment by doing:
+Sync dependencies:
 
 ```
 uv sync --all-extras
 ```
 
-## Environmental Variables
+## Environment Variables
 
-Simply copy over the required environmental variables by running:
+Copy the example file to create your local environment file:
 
 ```powershell
 cp .env.example .env
 ```
 
-For instructions on how to get an OpenRouter API Key, please refer to the [OpenRouter API Key](#openrouter-api-key) section.
+Then fill in the values. For instructions on getting each key, see the
+[OpenRouter API Key](#openrouter-api-key) section.
+
+> The repository also has optional PostgreSQL storage. If you use it, start a local
+> instance with `make db` (Docker) and open a psql console with `make db-it` — these
+> require `POSTGRES_DB`, `POSTGRES_USER`, and `POSTGRES_PASSWORD` to be set.
 
 ### OpenRouter API Key
 
-To support our workflow, we will require the use of LLMs.
-As OpenRouter supports the usage of free models from various providers, we will use it as our LLM provider.
+To support our workflow, we use LLMs to classify jobs. OpenRouter lets us use free models
+from various providers, so we use it as our LLM provider.
 
-To get the API Key, we can simply get it by logging into OpenRouter using a GitHub/Google account (or creating your own account), and heading over to https://openrouter.ai/settings/keys to create an API Key by clicking on the `Create API Key` button, as shown below:
+To get an API Key:
+1. Log into [OpenRouter](https://openrouter.ai/) using a GitHub/Google account (or create one).
+2. Go to https://openrouter.ai/settings/keys.
+3. Click the `Create API Key` button and copy the key.
 
 ![](assets/OpenRouter.png)
 
-## Workflow Run
+## Running the Workflow
 
-To run the workflow, you can simply run the following:
+Run migrations and the main job-sending workflow with:
 
 ```
 pymake run
 ```
+
+This runs `alembic upgrade head`, then executes `src.main`.
+
+## Development
+
+To install the pre-commit hooks (ruff lint + format checks):
+
+```bash
+pre-commit install
+```
+
+Format and lint the code:
+
+```bash
+uv run ruff format src/
+uv run ruff check src/
+```
+
+## Further docs
+
+- [Adding a New Job Channel](docs/ADD_NEW_JOB_CHANNEL.md)
