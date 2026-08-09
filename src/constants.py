@@ -278,6 +278,15 @@ BIG_TECH_COMPANIES = frozenset(
         "amd",
         "databricks",
         "snowflake",
+        "cursor",
+        "openai",
+        "binance",
+        "ibm",
+        "stripe",
+        "wise",
+        "mastercard",
+        "visa",
+        "govtech singapore",
     ]
 )
 
