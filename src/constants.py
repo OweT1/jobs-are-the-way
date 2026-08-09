@@ -264,32 +264,6 @@ HOURS_OLD_MAX: int = 12
 
 DB_CLEAN_UP_DAYS_THRESHOLD: int = 7
 
-BIG_TECH_COMPANIES = frozenset(
-    [
-        "apple",
-        "google",
-        "meta",
-        "microsoft",
-        "netflix",
-        "amazon",
-        "amazon.com",
-        "amazon web services (aws)",
-        "nvidia",
-        "amd",
-        "databricks",
-        "snowflake",
-        "cursor",
-        "openai",
-        "binance",
-        "ibm",
-        "stripe",
-        "wise",
-        "mastercard",
-        "visa",
-        "govtech singapore",
-    ]
-)
-
 BIG_TECH_JOB_CATEGORIES = frozenset(
     ["AIML_ENGINEER", "DATA_ENGINEER", "DATA_SCIENTIST", "SOFTWARE_ENGINEER", "TECH_PROG"]
 )

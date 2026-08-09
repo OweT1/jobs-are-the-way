@@ -15,6 +15,7 @@ jobs:
       HF_API_KEY: ${{ secrets.HF_API_KEY }}
       HF_BASE_URL: ${{ vars.HF_BASE_URL }}
       DEFAULT_LOCATION: ${{ vars.DEFAULT_LOCATION }}
+      BIG_TECH_COMPANIES: ${{ vars.BIG_TECH_COMPANIES }}
       TELEGRAM_BOT_API: ${{ secrets.TELEGRAM_BOT_API }}
       TELEGRAM_CHANNEL_ID: ${{ secrets.TELEGRAM_CHANNEL_ID }}
       AIML_ENGINEER_THREAD_ID: ${{ vars.AIML_ENGINEER_THREAD_ID }}

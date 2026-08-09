@@ -21,6 +21,13 @@ ENVIRONMENTS = [env.value for env in Environment]
 
 DEFAULT_LOCATION = "Singapore"
 
+DEFAULT_BIG_TECH_COMPANIES = (
+    "apple,google,meta,microsoft,netflix,amazon,amazon.com,"
+    "amazon web services (aws),nvidia,amd,databricks,snowflake,"
+    "cursor,openai,binance,ibm,stripe,wise,mastercard,visa,"
+    "govtech singapore,palantir technologies,revolut"
+)
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
@@ -57,6 +64,16 @@ class Settings(BaseSettings):
 
     # JobSpy
     default_location: str = DEFAULT_LOCATION
+
+    # Comma-separated list of "big tech" companies for the Big Tech thread.
+    # Override via the BIG_TECH_COMPANIES env var / GitHub Actions variable.
+    big_tech_companies: str = DEFAULT_BIG_TECH_COMPANIES
+
+    @property
+    def big_tech_company_set(self) -> frozenset[str]:
+        return frozenset(
+            company.strip() for company in self.big_tech_companies.split(",") if company.strip()
+        )
 
     # Telegram
     telegram_bot_api: str

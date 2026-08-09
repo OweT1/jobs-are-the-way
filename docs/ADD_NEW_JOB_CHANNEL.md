@@ -66,18 +66,26 @@ Thereafter, you will need to add a mapping in constants in `src/constants.py`, p
 
 If the channel aggregates jobs from other categories for a subset of companies:
 
-1. Add a constant list of the matching entities in `src/constants.py`:
+1. Add the matches to the `BIG_TECH_COMPANIES` environment variable (comma-separated).
+   The default lives in `DEFAULT_BIG_TECH_COMPANIES` in `src/core/config.py` and can be
+   overridden via `.env` locally and via a GitHub Actions **variable** (not secret) per
+   environment:
+
+   ```env
+   BIG_TECH_COMPANIES=apple,google,meta,microsoft,...
+   ```
+
+2. Keep the category filter in `src/constants.py`:
 
    ```python
-   BIG_TECH_COMPANIES = frozenset(["apple", "google", ...])
    BIG_TECH_JOB_CATEGORIES = frozenset(["SOFTWARE_ENGINEER", ...])
    ```
 
-2. Add a matcher helper in `src/utils.py`:
+3. Add a matcher helper in `src/utils.py` (reads from `settings.big_tech_company_set`):
 
    ```python
    def is_big_tech(company_name: str) -> bool:
-       return company_name.lower().strip() in BIG_TECH_COMPANIES
+       return company_name.lower().strip() in settings.big_tech_company_set
    ```
 
 ### 5. Send the messages in `src/main.py`
@@ -115,7 +123,7 @@ git add -A
 - [ ] `BIG_TECH_THREAD_ID=` added to `.env.example` and local `.env`
 - [ ] `big_tech_thread_id: str` added to `Settings`
 - [ ] Workflow YAML files export the new variable
-- [ ] GitHub Actions variables updated for all environments
+- [ ] GitHub Actions variables updated for all environments (incl. `BIG_TECH_COMPANIES`)
 - [ ] Constants + matcher helper added
 - [ ] `send_tele_msg_batch` logic uses the batch slice
 - [ ] `.isin()` used for category filtering
