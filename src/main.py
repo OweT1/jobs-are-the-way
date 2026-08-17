@@ -35,8 +35,6 @@ from src.utils import (
 )
 
 # --- Constants --- #
-LLM_MODEL: str = OpenRouterFreeModels.NVIDIA.value
-FALLBACK_MODEL: str = OpenRouterFreeModels.AVAILABLE.value
 MAX_API_CALLS_PER_MINUTE = 16
 BATCH_SIZE = 4
 MAX_BATCH_CALLS_PER_MINUTE = MAX_API_CALLS_PER_MINUTE / BATCH_SIZE
@@ -66,6 +64,25 @@ async def get_job_category_batch(client: LLMClient, df: pd.DataFrame, model: str
     return llm_results
 
 
+async def get_job_category_batch_cascade(
+    df: pd.DataFrame,
+    cascade: list[tuple[LLMClient, str]],
+) -> list[str]:
+    """Classify jobs by iterating over (client, model) tiers until one succeeds."""
+    last_exception = None
+    for client, model in cascade:
+        try:
+            return await get_job_category_batch(client, df, model)
+        except Exception as e:
+            last_exception = e
+            logger.warning(
+                "LLM model {} has errored out due to {}. Trying the next (LLMClient, model_name) pair...",
+                model,
+                e,
+            )
+    raise last_exception
+
+
 async def send_tele_msg_batch(
     telegram_bot: TeleBot, df: pd.DataFrame, company: str, thread_id: str
 ):
@@ -78,7 +95,7 @@ async def send_tele_msg_batch(
 # --- Main function --- #
 async def main():
     tele_bot = TeleBot()
-    client = build_openrouter_cascading_client()
+    openrouter_client = build_openrouter_cascading_client()
     db = PostgresDB()
     hours_old: int = get_hours_old()
     workflow_id = str(uuid.uuid4())
@@ -146,19 +163,15 @@ async def main():
             )
             continue
 
-        # Model-tier fallback: try the preferred model first, then fall back
-        # to any available OpenRouter model. Within each tier the cascading
-        # client rotates across API keys/providers automatically.
-        # TO-DO: change to (LLMClient, model_name) cascade - to make it easier for other clients & model combination to be used
-        try:
-            llm_results = await get_job_category_batch(client, company_df, LLM_MODEL)
-        except Exception as e:
-            logger.warning(
-                "Current LLM model {} has errored out due to {}. Defaulting to OpenRouter available models...",
-                LLM_MODEL,
-                e,
-            )
-            llm_results = await get_job_category_batch(client, company_df, FALLBACK_MODEL)
+        # Model-tier fallback: try each (client, model_name) pair in order,
+        # falling back to the next pair if one fails. Within each pair the
+        # cascading client rotates across API keys/providers automatically.
+        llm_cascade: list[tuple[LLMClient, str]] = [
+            (openrouter_client, OpenRouterFreeModels.NVIDIA_NEMO_3_ULTRA.value),
+            (openrouter_client, OpenRouterFreeModels.NVIDIA_NEMO_3_NANO.value),
+            (openrouter_client, OpenRouterFreeModels.AVAILABLE.value),
+        ]
+        llm_results = await get_job_category_batch_cascade(company_df, llm_cascade)
 
         company_df["job_category"] = llm_results
 

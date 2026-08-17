@@ -15,7 +15,9 @@ class OpenRouterFreeModels(Enum):
     OPENAI_20B = "openai/gpt-oss-20b:free"
     OPENAI_120B = "openai/gpt-oss-120b:free"
     GEMINI = "google/gemini-2.0-flash-exp:free"
-    NVIDIA = "nvidia/nemotron-3-nano-30b-a3b:free"
+    NVIDIA_NEMO_3_NANO = "nvidia/nemotron-3-nano-30b-a3b:free"
+    NVIDIA_NEMO_3_ULTRA = "nvidia/nemotron-3-ultra-550b-a55b:free"
+    NVIDIA_NEMO_35_LIGHTNING = "nvidia/nemotron-3.5-lightning:free"
     AVAILABLE = "openrouter/free"
 
 
