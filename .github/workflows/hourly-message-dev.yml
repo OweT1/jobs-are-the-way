@@ -35,6 +35,8 @@ jobs:
       NOT_RELEVANT_THREAD_ID: ${{ vars.NOT_RELEVANT_THREAD_ID }}
       BIG_TECH_THREAD_ID: ${{ vars.BIG_TECH_THREAD_ID }}
       POSTGRES_DB_URL: ${{ secrets.POSTGRES_DB_URL }}
+      HOURS_OLD: ${{ vars.HOURS_OLD }}
+      ENABLE_HOURS_OLD: ${{ vars.ENABLE_HOURS_OLD }}
 
     steps:
       - name: Checkout code

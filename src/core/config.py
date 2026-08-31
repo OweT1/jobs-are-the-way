@@ -98,6 +98,10 @@ class Settings(BaseSettings):
     # Postgres
     postgres_db_url: str
 
+    # Hours old
+    hours_old: int
+    enable_hours_old: int
+
 
 @lru_cache
 def get_settings():

@@ -6,6 +6,7 @@ from loguru import logger
 
 # Local Project
 from src.constants import HOURS_OLD_FALLBACK, HOURS_OLD_MAX
+from src.core import settings
 from src.db.pg import PostgresDB
 from src.db.repositories import WorkflowRunsRepository
 
@@ -16,6 +17,8 @@ WORKFLOWRUNS_REPO = WorkflowRunsRepository(PostgresDB())
 # --- Util Functions --- #
 def get_hours_old() -> int:
     try:
+        if settings.enable_hours_old:  # early fallback to use the setting's hours_old variable
+            return settings.hours_old
         latest_timestamp = WORKFLOWRUNS_REPO._get_latest_timestamp_with_completed()
         if latest_timestamp:
             time_diff: datetime.timedelta = (
