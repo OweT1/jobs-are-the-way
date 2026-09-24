@@ -19,7 +19,6 @@ class JobResults(Base):
     company = Column(Text, nullable=False)
     company_url = Column(Text, default="")
     title = Column(Text, nullable=False)
-    description = Column(Text, default="")
     job_url = Column(Text, nullable=False)
     job_category = Column(Text, nullable=False)
     created_at = Column(DateTime(timezone=True), default=datetime.datetime.now)
