@@ -1,9 +1,6 @@
 name: Daily DB Clean-up - PROD
 
 on:
-  schedule:
-    # Runs the workflow daily at 3am
-    - cron: "00 3 * * *"
   workflow_dispatch: # Allows to run the script manually for testing
 
 jobs:
